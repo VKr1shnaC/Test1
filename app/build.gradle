@@ -1,0 +1,21 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.homeflow.test'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'com.homeflow.test'
+        minSdk 26
+        targetSdk 35
+        versionCode 1
+        versionName '0.1-test'
+    }
+
+    buildTypes {
+        debug { minifyEnabled false }
+        release { minifyEnabled false }
+    }
+}
