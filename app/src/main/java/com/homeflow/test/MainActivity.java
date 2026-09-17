@@ -40,17 +40,22 @@ public class MainActivity extends Activity {
         }
     }
 
+    private static void appendAsset(android.content.res.AssetManager assets, String name, ByteArrayOutputStream out) throws Exception {
+        InputStream in = assets.open(name);
+        byte[] buf = new byte[8192]; int n;
+        while ((n = in.read(buf)) > 0) out.write(buf, 0, n);
+        in.close();
+    }
+
     private File prepareHtml() throws Exception {
         File out = new File(getFilesDir(), "homeflow.html");
-        if (out.exists() && out.length() > 1000) return out;
-        InputStream in = getAssets().open("homeflow.html.gz.b64");
         ByteArrayOutputStream text = new ByteArrayOutputStream();
-        byte[] buf = new byte[8192]; int n;
-        while ((n = in.read(buf)) > 0) text.write(buf, 0, n);
-        in.close();
+        appendAsset(getAssets(), "homeflow.html.gz.b64.prefix", text);
+        appendAsset(getAssets(), "homeflow.html.gz.b64", text);
         byte[] compressed = Base64.decode(text.toByteArray(), Base64.DEFAULT);
         GZIPInputStream gz = new GZIPInputStream(new ByteArrayInputStream(compressed));
-        FileOutputStream fos = new FileOutputStream(out);
+        FileOutputStream fos = new FileOutputStream(out, false);
+        byte[] buf = new byte[8192]; int n;
         while ((n = gz.read(buf)) > 0) fos.write(buf, 0, n);
         gz.close(); fos.close();
         return out;
