@@ -10,10 +10,10 @@ import android.content.SharedPreferences;
 import android.widget.RemoteViews;
 
 public class HomeFlowWidget extends AppWidgetProvider {
-    public static final String ACTION_MAID = "com.homeflow.test.WIDGET_MAID";
-    public static final String ACTION_MILK = "com.homeflow.test.WIDGET_MILK";
-    public static final String ACTION_AWAY = "com.homeflow.test.WIDGET_AWAY";
-    public static final String ACTION_VERIFY = "com.homeflow.test.WIDGET_VERIFY";
+    public static final String ACTION_MAID = "com.homeflow.stable.WIDGET_MAID";
+    public static final String ACTION_MILK = "com.homeflow.stable.WIDGET_MILK";
+    public static final String ACTION_AWAY = "com.homeflow.stable.WIDGET_AWAY";
+    public static final String ACTION_VERIFY = "com.homeflow.stable.WIDGET_VERIFY";
     private static final String PREFS = "homeflow_widget";
 
     @Override public void onUpdate(Context context, AppWidgetManager manager, int[] ids) {
