@@ -6,7 +6,7 @@
     const style = document.createElement('style');
     style.id = 'homeflow-stable-v6-css';
     style.textContent = `
-      html,body{width:100%;min-height:100%;overflow-x:hidden;overscroll-behavior:none!important}
+      html,body{width:100%;min-height:100%;overflow-x:hidden;overscroll-behavior:none!important} body{touch-action:pan-y}
       button,.settingEntry,.statusBtn,.editorBtn{-webkit-tap-highlight-color:transparent}
       @media(max-width:600px){
         body{margin:0!important;padding:0!important;min-height:100vh!important;background:linear-gradient(145deg,#fbfcf9,#f5f8f8 52%,#fbf5ef)!important}
@@ -69,10 +69,25 @@
       state.bills=state.bills.filter(x=>x.id!==id);
       saveState(); renderBills(); renderHome(); toast('Bill deleted');
     };
+    if (!window.__hfDemoMaintenanceRemoved) {
+      window.__hfDemoMaintenanceRemoved = true;
+      const demo = state.bills && state.bills.find(b =>
+        b.id==='b4' &&
+        b.name==='Apartment maintenance' &&
+        Number(b.amount)===1800 &&
+        b.due==='2026-09-05'
+      );
+      if (demo) {
+        state.bills = state.bills.filter(b => b.id !== 'b4');
+        try { localStorage.setItem(DBKEY, JSON.stringify(state)); } catch (_) {}
+      }
+    }
+
     const originalRenderBills=window.renderBills;
     window.renderBills=function(){
       if(originalRenderBills) originalRenderBills();
       document.querySelectorAll('#billsList .card').forEach(card=>{
+        card.innerHTML = card.innerHTML.replace(/ • Recurring(?! monthly)/g,' • Recurring monthly');
         if(card.querySelector('.hfDeleteBill')) return;
         const edit=card.querySelector('button[onclick*="editBill"]');
         if(!edit) return;
@@ -112,17 +127,12 @@
     if(scan){
       scan.onclick=function(){
         const s=document.getElementById('importStatus');
-        if(s) s.innerHTML='<div class="ok">Direct SMS is disabled in Stable v6. Use XML / ZIP backup import here. SMS access will be tested separately.</div>';
+        if(s) s.innerHTML='<div class="ok">Direct SMS is disabled in Stable v9. Use XML / ZIP backup import here. SMS access will be tested separately.</div>';
       };
     }
     const importSub=document.querySelector('#import>.tiny');
-    if(importSub) importSub.textContent='XML / ZIP works fully offline. Direct SMS is kept out of this stable build.';
-
-    document.addEventListener('focusin',function(e){
-      if(e.target && e.target.matches && e.target.matches('input,select,textarea')){
-        setTimeout(()=>{ try{ e.target.scrollIntoView({block:'center',behavior:'smooth'}); }catch(_){} },180);
-      }
-    });
+    if(importSub) importSub.textContent='XML / ZIP works fully on-device without internet. Direct SMS is kept out of this stable build.';
+    document.querySelectorAll('.badge').forEach(b=>{ if(b.textContent.trim()==='OFFLINE') b.textContent='ON-DEVICE'; });
 
     renderBills();
     renderHome();
