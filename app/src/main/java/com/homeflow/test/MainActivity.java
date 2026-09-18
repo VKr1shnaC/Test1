@@ -18,7 +18,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
-import android.widget.TextView;
+import android.widget.TextView;\nimport android.util.Base64;\n\nimport java.io.ByteArrayInputStream;\nimport java.io.ByteArrayOutputStream;\nimport java.io.File;\nimport java.io.FileOutputStream;\nimport java.io.InputStream;\nimport java.util.zip.GZIPInputStream;
 
 public class MainActivity extends Activity {
     private static final int FILE_CHOOSER = 501;
@@ -31,10 +31,32 @@ public class MainActivity extends Activity {
             setContentView(R.layout.activity_main);
             webView = findViewById(R.id.webview);
             configure(webView, false, null);
-            if (state == null) webView.loadUrl("file:///android_asset/homeflow.html");
+            if (state == null) webView.loadUrl("file://" + prepareHtml().getAbsolutePath());
         } catch (Throwable t) {
             showNativeError("HomeFlow could not start", t);
         }
+    }
+
+
+    private static void appendAsset(android.content.res.AssetManager assets, String name, ByteArrayOutputStream out) throws Exception {
+        InputStream in = assets.open(name);
+        byte[] buf = new byte[8192]; int n;
+        while ((n = in.read(buf)) > 0) out.write(buf, 0, n);
+        in.close();
+    }
+
+    private File prepareHtml() throws Exception {
+        File out = new File(getFilesDir(), "homeflow.html");
+        ByteArrayOutputStream text = new ByteArrayOutputStream();
+        appendAsset(getAssets(), "homeflow.html.gz.b64.prefix", text);
+        appendAsset(getAssets(), "homeflow.html.gz.b64", text);
+        byte[] compressed = Base64.decode(text.toByteArray(), Base64.DEFAULT);
+        GZIPInputStream gz = new GZIPInputStream(new ByteArrayInputStream(compressed));
+        FileOutputStream fos = new FileOutputStream(out, false);
+        byte[] buf = new byte[8192]; int n;
+        while ((n = gz.read(buf)) > 0) fos.write(buf, 0, n);
+        gz.close(); fos.close();
+        return out;
     }
 
     private void showNativeError(String title, Throwable t) {
