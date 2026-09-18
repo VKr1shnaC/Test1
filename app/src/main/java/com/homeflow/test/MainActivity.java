@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
@@ -17,30 +18,40 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.FrameLayout;
-import android.widget.TextView;\nimport android.util.Base64;\n\nimport java.io.ByteArrayInputStream;\nimport java.io.ByteArrayOutputStream;\nimport java.io.File;\nimport java.io.FileOutputStream;\nimport java.io.InputStream;\nimport java.util.zip.GZIPInputStream;
+import android.widget.TextView;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.util.zip.GZIPInputStream;
 
 public class MainActivity extends Activity {
     private static final int FILE_CHOOSER = 501;
     private WebView webView;
     private ValueCallback<Uri[]> fileCallback;
 
-    @Override protected void onCreate(Bundle state) {
+    @Override
+    protected void onCreate(Bundle state) {
         super.onCreate(state);
         try {
             setContentView(R.layout.activity_main);
             webView = findViewById(R.id.webview);
             configure(webView, false, null);
-            if (state == null) webView.loadUrl("file://" + prepareHtml().getAbsolutePath());
+            if (state == null) {
+                File html = prepareHtml();
+                webView.loadUrl("file://" + html.getAbsolutePath());
+            }
         } catch (Throwable t) {
             showNativeError("HomeFlow could not start", t);
         }
     }
 
-
     private static void appendAsset(android.content.res.AssetManager assets, String name, ByteArrayOutputStream out) throws Exception {
         InputStream in = assets.open(name);
-        byte[] buf = new byte[8192]; int n;
+        byte[] buf = new byte[8192];
+        int n;
         while ((n = in.read(buf)) > 0) out.write(buf, 0, n);
         in.close();
     }
@@ -50,12 +61,15 @@ public class MainActivity extends Activity {
         ByteArrayOutputStream text = new ByteArrayOutputStream();
         appendAsset(getAssets(), "homeflow.html.gz.b64.prefix", text);
         appendAsset(getAssets(), "homeflow.html.gz.b64", text);
+
         byte[] compressed = Base64.decode(text.toByteArray(), Base64.DEFAULT);
         GZIPInputStream gz = new GZIPInputStream(new ByteArrayInputStream(compressed));
         FileOutputStream fos = new FileOutputStream(out, false);
-        byte[] buf = new byte[8192]; int n;
+        byte[] buf = new byte[8192];
+        int n;
         while ((n = gz.read(buf)) > 0) fos.write(buf, 0, n);
-        gz.close(); fos.close();
+        gz.close();
+        fos.close();
         return out;
     }
 
@@ -63,9 +77,11 @@ public class MainActivity extends Activity {
         TextView v = new TextView(this);
         v.setPadding(36, 56, 36, 36);
         v.setTextSize(16);
-        v.setTextColor(Color.rgb(23,50,75));
+        v.setTextColor(Color.rgb(23, 50, 75));
         v.setBackgroundColor(Color.WHITE);
-        String msg = t == null ? "Unknown startup problem" : t.getClass().getSimpleName() + ": " + String.valueOf(t.getMessage());
+        String msg = t == null
+            ? "Unknown startup problem"
+            : t.getClass().getSimpleName() + ": " + String.valueOf(t.getMessage());
         v.setText(title + "\n\n" + msg + "\n\nPlease send a screenshot of this screen.");
         setContentView(v);
     }
@@ -88,7 +104,8 @@ public class MainActivity extends Activity {
         w.addJavascriptInterface(new PrintBridge(this), "AndroidPrint");
 
         w.setWebViewClient(new WebViewClient() {
-            @Override public void onPageFinished(WebView view, String url) {
+            @Override
+            public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
                 view.evaluateJavascript(
                     "window.print=function(){if(window.AndroidPrint){AndroidPrint.printHtml(document.documentElement.outerHTML);}};",
@@ -96,16 +113,21 @@ public class MainActivity extends Activity {
                 );
             }
 
-            @Override public boolean onRenderProcessGone(WebView view, RenderProcessGoneDetail detail) {
-                if (view != null) {
-                    ViewGroup parent = (ViewGroup)view.getParent();
-                    if (parent != null) parent.removeView(view);
-                    view.destroy();
-                }
+            @Override
+            public boolean onRenderProcessGone(WebView view, RenderProcessGoneDetail detail) {
+                try {
+                    if (view != null) {
+                        ViewGroup parent = (ViewGroup) view.getParent();
+                        if (parent != null) parent.removeView(view);
+                        view.destroy();
+                    }
+                } catch (Throwable ignored) {}
+
                 if (!child) {
-                    showNativeError("HomeFlow WebView stopped", new RuntimeException(
-                        "Renderer exited. Did it crash: " + detail.didCrash()
-                    ));
+                    showNativeError(
+                        "HomeFlow WebView stopped",
+                        new RuntimeException("Renderer exited. Crash=" + detail.didCrash())
+                    );
                 } else if (dialog != null) {
                     dialog.dismiss();
                 }
@@ -114,12 +136,19 @@ public class MainActivity extends Activity {
         });
 
         w.setWebChromeClient(new WebChromeClient() {
-            @Override public boolean onShowFileChooser(WebView view, ValueCallback<Uri[]> callback, FileChooserParams params) {
+            @Override
+            public boolean onShowFileChooser(
+                WebView view,
+                ValueCallback<Uri[]> callback,
+                FileChooserParams params
+            ) {
                 if (fileCallback != null) fileCallback.onReceiveValue(null);
                 fileCallback = callback;
+
                 Intent intent;
-                try { intent = params.createIntent(); }
-                catch (Exception ex) {
+                try {
+                    intent = params.createIntent();
+                } catch (Exception ex) {
                     intent = new Intent(Intent.ACTION_OPEN_DOCUMENT)
                         .setType("*/*")
                         .addCategory(Intent.CATEGORY_OPENABLE);
@@ -128,29 +157,46 @@ public class MainActivity extends Activity {
                 return true;
             }
 
-            @Override public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, android.os.Message resultMsg) {
-                Dialog d = new Dialog(MainActivity.this, android.R.style.Theme_Material_Light_NoActionBar_Fullscreen);
+            @Override
+            public boolean onCreateWindow(
+                WebView view,
+                boolean isDialog,
+                boolean isUserGesture,
+                android.os.Message resultMsg
+            ) {
+                Dialog d = new Dialog(
+                    MainActivity.this,
+                    android.R.style.Theme_Material_Light_NoActionBar_Fullscreen
+                );
                 WebView childView = new WebView(MainActivity.this);
                 configure(childView, true, d);
-                d.setContentView(childView, new ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT
-                ));
+                d.setContentView(
+                    childView,
+                    new ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT
+                    )
+                );
                 d.show();
-                WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
+
+                WebView.WebViewTransport transport =
+                    (WebView.WebViewTransport) resultMsg.obj;
                 transport.setWebView(childView);
                 resultMsg.sendToTarget();
                 return true;
             }
 
-            @Override public void onCloseWindow(WebView window) {
+            @Override
+            public void onCloseWindow(WebView window) {
                 if (child && dialog != null) dialog.dismiss();
             }
         });
     }
 
-    @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if (requestCode == FILE_CHOOSER && fileCallback != null) {
             Uri[] out = null;
             if (resultCode == RESULT_OK) {
@@ -161,22 +207,32 @@ public class MainActivity extends Activity {
         }
     }
 
-    @Override public void onBackPressed() {
-        if (webView != null && webView.canGoBack()) webView.goBack();
-        else super.onBackPressed();
+    @Override
+    public void onBackPressed() {
+        if (webView != null && webView.canGoBack()) {
+            webView.goBack();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     public static class PrintBridge {
         private final Activity activity;
-        PrintBridge(Activity a) { activity = a; }
 
-        @JavascriptInterface public void printHtml(String html) {
+        PrintBridge(Activity a) {
+            activity = a;
+        }
+
+        @JavascriptInterface
+        public void printHtml(String html) {
             activity.runOnUiThread(() -> {
                 WebView printView = new WebView(activity);
                 printView.getSettings().setJavaScriptEnabled(true);
                 printView.setWebViewClient(new WebViewClient() {
-                    @Override public void onPageFinished(WebView view, String url) {
-                        PrintManager pm = (PrintManager) activity.getSystemService(Context.PRINT_SERVICE);
+                    @Override
+                    public void onPageFinished(WebView view, String url) {
+                        PrintManager pm =
+                            (PrintManager) activity.getSystemService(Context.PRINT_SERVICE);
                         pm.print(
                             "HomeFlow monthly statement",
                             view.createPrintDocumentAdapter("HomeFlow monthly statement"),
@@ -184,6 +240,7 @@ public class MainActivity extends Activity {
                         );
                     }
                 });
+
                 printView.loadDataWithBaseURL(
                     "https://homeflow.local/",
                     html,
