@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
         android:allowBackup="true"
-        android:label="HomeFlow Test"
+        android:label="HomeFlow"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:theme="@style/AppTheme"
@@ -21,10 +21,10 @@
         <receiver android:name=".HomeFlowWidget" android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="com.homeflow.test.WIDGET_MAID" />
-                <action android:name="com.homeflow.test.WIDGET_MILK" />
-                <action android:name="com.homeflow.test.WIDGET_AWAY" />
-                <action android:name="com.homeflow.test.WIDGET_VERIFY" />
+                <action android:name="com.homeflow.stable.WIDGET_MAID" />
+                <action android:name="com.homeflow.stable.WIDGET_MILK" />
+                <action android:name="com.homeflow.stable.WIDGET_AWAY" />
+                <action android:name="com.homeflow.stable.WIDGET_VERIFY" />
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
