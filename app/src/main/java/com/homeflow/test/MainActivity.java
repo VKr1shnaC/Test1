@@ -84,9 +84,17 @@ public class MainActivity extends Activity {
                 super.onPageFinished(view, url);
                 view.evaluateJavascript("window.print=function(){if(window.AndroidPrint){AndroidPrint.printHtml(document.documentElement.outerHTML);}};", null);
                 if (!child) {
-                    String p = new String(Base64.decode(UI_PATCH_B64, Base64.DEFAULT), java.nio.charset.StandardCharsets.UTF_8);
-                    view.evaluateJavascript(p, null);
-                    view.evaluateJavascript("(function(){document.addEventListener('focusin',function(e){var m=e.target&&e.target.closest?e.target.closest('.modal'):null;if(m)setTimeout(function(){e.target.scrollIntoView({block:'center',behavior:'smooth'});},120);});window.scanPhoneSms=function(){var s=document.getElementById('importStatus');if(s)s.innerHTML='<div class=\\\"ok\\\">Direct SMS is disabled in Stable v5. Use XML / ZIP import here; SMS Lab will be tested separately.</div>';};})();", null);
+                    try {
+                        InputStream pin = getAssets().open("stable_patch.js");
+                        ByteArrayOutputStream pout = new ByteArrayOutputStream();
+                        byte[] pbuf = new byte[8192]; int pn;
+                        while ((pn = pin.read(pbuf)) > 0) pout.write(pbuf, 0, pn);
+                        pin.close();
+                        String p = new String(pout.toByteArray(), StandardCharsets.UTF_8);
+                        view.evaluateJavascript(p, null);
+                    } catch (Exception patchError) {
+                        android.util.Log.e("HomeFlow", "Stable patch failed", patchError);
+                    }
                 }
             }
         });
