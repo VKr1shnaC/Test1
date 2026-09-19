@@ -40,8 +40,7 @@ public class MainActivity extends Activity {
             webView = findViewById(R.id.webview);
             configure(webView, false, null);
             if (state == null) {
-                File html = prepareHtml();
-                webView.loadUrl("file://" + html.getAbsolutePath());
+                webView.loadUrl("file:///android_asset/homeflow_final_v10.html");
             }
         } catch (Throwable t) {
             showNativeError("HomeFlow could not start", t);
