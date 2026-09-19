@@ -10,8 +10,8 @@ android {
         applicationId 'com.homeflow.stable'
         minSdk 26
         targetSdk 35
-        versionCode 9
-        versionName '0.9-stable-fresh'
+        versionCode 10
+        versionName '1.0-final-test'
     }
 
     buildTypes {
