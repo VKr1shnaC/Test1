@@ -1,0 +1,842 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>HomeFlow — Final Consolidated Test</title>
+<style>
+:root{
+ --ink:#17324b;--muted:#748595;--g:#2f9d6a;--g2:#59bb8d;--amber:#e5a13b;--red:#d95d62;
+ --blue:#3b86ca;--violet:#7b6fd0;--line:rgba(23,50,75,.08);--glass:rgba(255,255,255,.82);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--ink);min-height:100vh;padding:16px 10px 40px;
+background:radial-gradient(circle at 9% 6%,rgba(124,219,174,.45),transparent 28%),radial-gradient(circle at 92% 8%,rgba(255,203,148,.48),transparent 25%),radial-gradient(circle at 55% 94%,rgba(164,203,255,.36),transparent 32%),linear-gradient(145deg,#fbfcf9,#f5f8f8 52%,#fbf5ef)}
+button,input,select,textarea{font:inherit}.phone{max-width:460px;margin:auto;background:#ffffff66;backdrop-filter:blur(20px);border:1px solid #ffffffdc;border-radius:35px;padding:13px;box-shadow:0 24px 70px #29485b2e}
+.top,.row{display:flex;justify-content:space-between;align-items:center;gap:10px}.top{padding:7px 5px 14px}.brand{display:flex;gap:10px;align-items:center}.logo{width:44px;height:44px;border-radius:15px;display:grid;place-items:center;background:linear-gradient(145deg,#effff6,#fff0da);font-size:24px}h1{margin:0;font-size:20px}.tiny{font-size:11px;color:var(--muted);line-height:1.45}.gear{border:0;background:#ffffffb9;width:38px;height:38px;border-radius:13px;cursor:pointer}
+.screen{display:none}.screen.active{display:block}.hero,.card,.panel,.month{padding:16px;border-radius:23px;background:var(--glass);border:1px solid #fff;margin-top:11px;box-shadow:0 12px 30px #21444d0c}.hero{margin-top:0;background:linear-gradient(145deg,#ffffffef,#fff9efcc)}.headline{font-size:27px;font-weight:860;margin-top:3px}.sec{font-size:18px;font-weight:850}.amount{font-size:25px;font-weight:850}
+.badge{font-size:10px;padding:5px 8px;border-radius:999px;background:#eef4f7;white-space:nowrap}.green{background:#ebf8f0;color:var(--g)}.amber{background:#fff4df;color:#9b6416}.purple{background:#f1efff;color:var(--violet)}.red{background:#ffebec;color:var(--red)}.blue{background:#eaf4ff;color:var(--blue)}
+.primary,.ghost,.soft,.danger{border-radius:14px;padding:10px 12px;font-weight:800;cursor:pointer}.primary{border:0;background:linear-gradient(135deg,var(--g),var(--g2));color:#fff}.ghost{border:1px solid var(--line);background:#fff;color:var(--ink)}.soft{border:0;background:#eef8f1;color:var(--g)}.danger{border:0;background:#ffebec;color:var(--red)}.full{width:100%}
+.input{width:100%;padding:11px;border:1px solid var(--line);border-radius:13px;background:#fff;margin-top:7px}
+input[type="file"].input{
+ padding:12px;
+ border-radius:16px;
+ border:1px solid rgba(47,157,106,.16);
+ background:linear-gradient(145deg,#f7fffaff,#fff);
+ box-shadow:0 8px 22px #2d5f5010;
+ color:var(--muted);
+}
+input[type="file"].input::file-selector-button{
+ border:1px solid rgba(23,50,75,.10);
+ background:#fff;
+ color:var(--ink);
+ border-radius:12px;
+ padding:9px 14px;
+ margin-right:12px;
+ font-weight:800;
+ cursor:pointer;
+ box-shadow:0 3px 10px rgba(23,50,75,.06);
+}
+input[type="file"].input::-webkit-file-upload-button{
+ border:1px solid rgba(23,50,75,.10);
+ background:#fff;
+ color:var(--ink);
+ border-radius:12px;
+ padding:9px 14px;
+ margin-right:12px;
+ font-weight:800;
+ cursor:pointer;
+ box-shadow:0 3px 10px rgba(23,50,75,.06);
+}
+input[type="file"].input:hover::file-selector-button,
+input[type="file"].input:hover::-webkit-file-upload-button{
+ background:#eef8f1;
+ color:var(--g);
+}
+input[type="file"].input:focus{
+ outline:none;
+ border-color:rgba(47,157,106,.34);
+ box-shadow:0 0 0 3px rgba(47,157,106,.08),0 8px 22px #2d5f5010;
+}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.bill,.tx,.line{padding:11px 0;border-bottom:1px dashed var(--line)}.bill:last-child,.tx:last-child,.line:last-child{border:0}.due{font-size:11px;color:var(--amber)}.paid{font-size:11px;color:var(--g)}.recover{font-size:11px;color:var(--violet)}
+.nav{display:grid;grid-template-columns:repeat(5,1fr);gap:3px;margin-top:14px;padding:7px;border-radius:20px;background:#ffffffdf;border:1px solid #fff;position:sticky;bottom:7px;backdrop-filter:blur(15px);z-index:20}.nav button{border:0;background:transparent;border-radius:13px;padding:7px 2px;color:var(--muted);font-size:9px;cursor:pointer}.nav button.active{background:#eef8f1;color:var(--g);font-weight:800}.nav i{display:block;font-style:normal;font-size:18px}.fab{width:45px!important;height:45px!important;margin:-14px auto 0;background:linear-gradient(135deg,var(--g),var(--g2))!important;color:#fff!important;font-size:19px!important}
+.accordion{margin-top:10px;border-radius:21px;background:rgba(255,255,255,.84);border:1px solid #fff;overflow:hidden}.trigger{width:100%;border:0;background:transparent;padding:14px 15px;display:flex;justify-content:space-between;align-items:center;gap:12px;text-align:left;color:var(--ink);cursor:pointer}.trigger:active{background:#f7faf8}.left{display:flex;align-items:center;gap:11px;min-width:0}.icon{width:38px;height:38px;border-radius:13px;display:grid;place-items:center;background:#f4faf6;font-size:20px;flex:0 0 auto}.title{font-weight:850;font-size:15px}.summary{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:245px}.chev{font-size:18px;color:#8a98a5;transition:.2s}.accordion.open .chev{transform:rotate(90deg)}.content{display:none;padding:0 15px 15px}.accordion.open .content{display:block}.divider{height:1px;background:var(--line);margin-bottom:11px}
+.statusRow{display:grid;grid-template-columns:1fr 1fr;gap:8px}.statusBtn{border:1px solid var(--line);background:#fff;border-radius:15px;padding:11px;text-align:left;cursor:pointer}.statusBtn b{display:block;margin-top:3px}.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.attn{background:#fff7e8}.attn .icon{background:#fff0d4}.chips{display:flex;gap:7px;overflow:auto;padding-top:9px}.chip{white-space:nowrap;background:#fff;padding:7px 9px;border-radius:999px;font-size:11px;border:1px solid var(--line)}
+.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.quick button{border:0;background:#fff;border-radius:14px;padding:10px 5px;font-size:10px;cursor:pointer}.quick i{display:block;font-style:normal;font-size:21px;margin-bottom:4px}
+.subtabs{display:flex;gap:7px;overflow:auto;margin-bottom:10px}.subtabs button{border:0;border-radius:999px;padding:8px 11px;background:#eef4f7;color:var(--muted);font-weight:750;white-space:nowrap;cursor:pointer}.subtabs button.active{background:#eef8f1;color:var(--g)}.subview{display:none}.subview.active{display:block}
+.cardVisual{padding:17px;border-radius:22px;color:#fff;background:linear-gradient(135deg,#214f72,#2f9d6a);box-shadow:0 16px 35px #27506438;margin-top:9px}.cardVisual.alt{background:linear-gradient(135deg,#5c5aa8,#9888e9)}.last4{letter-spacing:2px;font-size:15px}.spend{font-size:26px;font-weight:850;margin-top:12px}.label{font-size:11px;opacity:.8}
+.metricgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}.metric{background:#fff;border-radius:14px;padding:10px;font-size:11px;border:1px solid var(--line)}.metric b{display:block;font-size:15px;margin-top:3px}
+.filePick{display:flex;align-items:center;gap:12px;width:100%;margin-top:13px;padding:14px;border:1px solid rgba(47,157,106,.16);border-radius:19px;cursor:pointer;background:linear-gradient(145deg,#f7fffaff,#fff);box-shadow:0 8px 22px #2d5f5012}.fileIcon{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;font-size:23px;background:#eaf9f0}.fileMeta{min-width:0;flex:1}.fileTitle{font-weight:830;font-size:14px}.fileName{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.fileAction{font-size:12px;font-weight:800;color:var(--g)}#importFile{display:none}.detected{margin-top:10px;padding:12px 13px;border-radius:16px;background:#eef9f2}.range{font-size:15px;font-weight:850;margin-top:2px}.hidden{display:none}
+.dup{padding:13px;border-radius:18px;background:#fff;margin-top:9px;border:1px solid var(--line)}.dup.exact{border-left:5px solid var(--red)}.dup.strong{border-left:5px solid var(--amber)}.dup.weak{border-left:5px solid var(--blue)}.why{margin-top:6px;padding:8px 10px;border-radius:12px;background:#f7f9fa;font-size:11px;color:#526677}.compare{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}.side{padding:9px;border-radius:13px;background:#f9fbfb;font-size:11px}.side b{display:block;margin-bottom:3px}
+.reviewViz{display:grid;grid-template-columns:140px 1fr;gap:15px;align-items:center;margin-top:12px}.donut{width:132px;height:132px;border-radius:50%;position:relative;background:conic-gradient(#2f9d6a 0 20%,#e5a13b 20% 50%,#3b86ca 50% 80%,#d95c61 80% 100%)}.donut:after{content:"";position:absolute;inset:25px;border-radius:50%;background:#fff}.donutCenter{position:absolute;inset:0;z-index:2;display:grid;place-content:center;text-align:center}.donutCenter small{font-size:10px;color:var(--muted)}.donutCenter b{font-size:16px}.vizLegend{display:grid;gap:8px}.vizItem{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12px}.vizName{display:flex;align-items:center;gap:7px}.dot{width:11px;height:11px;border-radius:50%}
+.sheet{position:fixed;inset:0;background:rgba(20,42,58,.38);display:none;align-items:flex-end;justify-content:center;padding:14px;z-index:90}.sheet.show{display:flex}.modal{width:min(460px,100%);background:#fffaf5;border-radius:28px;padding:18px;box-shadow:0 22px 80px rgba(18,44,64,.35);max-height:92vh;overflow:auto}.modalTitle{font-size:19px;font-weight:850}
+.calendarHead{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:14px}.calendarHead div{text-align:center;font-size:10px;color:var(--muted);font-weight:700}.calendarGrid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:5px}.dayCell{min-height:54px;border:1px solid var(--line);border-radius:13px;background:#fff;padding:5px 4px;text-align:left;color:var(--ink);cursor:pointer}.dayCell.empty{background:transparent;border-color:transparent;cursor:default}.dayCell.sun{opacity:.52}.dayCell.today{outline:2px solid #73bf91}.dayNum{font-size:11px;font-weight:850}.dayFlags{font-size:9px;line-height:1.3;margin-top:4px}.calLegend{display:flex;flex-wrap:wrap;gap:7px 10px;margin-top:10px;font-size:10px;color:var(--muted)}.calSummary{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.calMetric{padding:10px;border-radius:14px;background:#fff;border:1px solid var(--line);font-size:11px}.calMetric b{display:block;font-size:15px;margin-top:2px}.editorGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.editorBtn{border:1px solid var(--line);background:#fff;border-radius:14px;padding:11px;font-weight:800;cursor:pointer}.editorBtn.selected{background:#eef8f1;color:var(--g);border-color:#b8dfc9}.editorSection{margin-top:12px;padding:13px;border-radius:17px;background:#ffffffc7;border:1px solid #fff}
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(30px);opacity:0;transition:.2s;background:#17324be8;color:#fff;padding:10px 14px;border-radius:999px;font-size:12px;z-index:120}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.ok,.warn,.error{padding:11px 12px;border-radius:15px;font-size:12px;margin-top:10px}.ok{background:#eef9f2}.warn{background:#fff4df}.error{background:#ffeded;color:#8e3438}
+@media(max-width:380px){.reviewViz{grid-template-columns:1fr}.donut{margin:auto}}
+@media print{body{background:white;padding:0}.phone,.sheet,.toast{display:none!important}#printReport{display:block!important}}
+#printReport{display:none;padding:20px;font-family:Arial;color:#172f43}#printReport table{width:100%;border-collapse:collapse;margin-top:10px}#printReport th,#printReport td{border-bottom:1px solid #ddd;padding:7px;text-align:left}#printReport th:last-child,#printReport td:last-child{text-align:right}
+
+.settingsMenu{display:grid;gap:8px;margin-top:12px}
+.settingEntry{width:100%;display:flex;align-items:flex-start;gap:11px;text-align:left;border:1px solid var(--line);background:#fff;border-radius:17px;padding:12px;cursor:pointer;color:var(--ink)}
+.settingEntry:active{transform:scale(.995)}
+.settingEntry .sicon{width:39px;height:39px;border-radius:13px;background:#f3f8f5;display:grid;place-items:center;font-size:20px;flex:0 0 auto}
+.settingEntry .smain{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;padding-top:1px}
+.settingEntry .stitle{display:block;font-weight:850;font-size:14px;line-height:1.2}
+.settingEntry .ssub{display:block;font-size:10px;color:var(--muted);margin-top:4px;line-height:1.45;white-space:normal;overflow-wrap:anywhere}
+.settingEntry .chev{flex:0 0 auto;align-self:center;color:var(--muted);font-size:18px;line-height:1;margin-left:2px}
+.previewPill{flex:0 0 auto;align-self:center;margin-left:4px;white-space:nowrap;font-size:10px;border-radius:999px;padding:5px 8px;background:#f0f5f7;color:var(--muted)}
+.settingBlock{margin-top:11px;padding:13px;border-radius:18px;background:#ffffffd6;border:1px solid #fff}
+.settingBlockTitle{font-size:12px;font-weight:850;margin-bottom:7px}
+.settingRow{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:9px 0;border-bottom:1px dashed var(--line)}
+.settingRow:last-child{border-bottom:0}.settingRow .copy{min-width:0}.settingRow .copy b{font-size:12px}.settingRow .copy .tiny{margin-top:2px}
+.settingRow input[type="checkbox"]{width:19px;height:19px;accent-color:var(--g);flex:0 0 auto}
+.settingRow select,.settingRow input[type="number"],.settingRow input[type="time"],.settingRow input[type="text"]{max-width:155px;margin-top:0;padding:8px;border:1px solid var(--line);border-radius:11px;background:#fff;color:var(--ink)}
+.settingsFooter{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+
+body.theme-dark{--ink:#edf5f7;--muted:#a8b7c0;--line:rgba(230,244,248,.12);background:radial-gradient(circle at 9% 6%,rgba(47,157,106,.22),transparent 28%),radial-gradient(circle at 92% 8%,rgba(229,161,59,.18),transparent 25%),linear-gradient(145deg,#101c24,#14252e 52%,#1a2024)}
+body.theme-dark .phone{background:rgba(19,35,44,.78);border-color:rgba(255,255,255,.08)}
+body.theme-dark .hero,body.theme-dark .card,body.theme-dark .panel,body.theme-dark .month,body.theme-dark .accordion{background:rgba(27,45,55,.88);border-color:rgba(255,255,255,.07)}
+body.theme-dark .modal{background:#172a34}
+body.theme-dark .settingEntry,body.theme-dark .settingBlock,body.theme-dark .ghost,body.theme-dark .statusBtn,body.theme-dark .input,body.theme-dark .editorBtn,body.theme-dark .metric,body.theme-dark .dayCell{background:#203742;color:var(--ink);border-color:rgba(255,255,255,.09)}
+body.theme-dark .settingEntry .sicon,body.theme-dark .icon{background:#29434d}
+body.theme-dark input[type="file"].input{
+ background:#203742;
+ color:var(--muted);
+ border-color:rgba(255,255,255,.09);
+}
+body.theme-dark input[type="file"].input::file-selector-button,
+body.theme-dark input[type="file"].input::-webkit-file-upload-button{
+ background:#29434d;
+ color:var(--ink);
+ border-color:rgba(255,255,255,.08);
+}
+body.theme-dark .donut:after{background:#203742}
+body.theme-dark .nav{background:rgba(24,43,53,.94);border-color:rgba(255,255,255,.08)}
+body.compact-density .card,body.compact-density .panel,body.compact-density .accordion{margin-top:7px}
+body.compact-density .trigger{padding:10px 12px}
+body.compact-density .bill,body.compact-density .tx,body.compact-density .line{padding:8px 0}
+
+
+/* HomeFlow Grok-inspired final test skin */
+:root{
+ --ink:#13211f;--muted:#5d6b68;--g:#0f6e66;--g2:#2bb8a8;--amber:#c49a4a;--red:#b4454a;
+ --blue:#3b86ca;--violet:#6d63b8;--line:rgba(19,33,31,.09);--glass:#fffdf8;
+ --bg:#f3f0e8;--nav:#0e4a45;--elev:#f7f4ee;
+}
+*{-webkit-tap-highlight-color:transparent}
+html,body{width:100%;min-height:100%;overflow-x:hidden;overscroll-behavior:none;background:var(--bg)}
+body{padding:0!important;font-family:"Plus Jakarta Sans","Segoe UI",system-ui,-apple-system,sans-serif;color:var(--ink);background:var(--bg)!important;touch-action:pan-y}
+.phone{width:min(100%,40rem)!important;max-width:40rem!important;min-height:100dvh;margin:0 auto!important;padding:max(12px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) calc(112px + env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))!important;background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;backdrop-filter:none!important}
+.top{position:sticky;top:0;z-index:30;margin:0 -2px 6px;padding:10px 2px 12px!important;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(14px)}
+.logo{background:var(--nav)!important;color:#f4f0e8!important;border-radius:14px!important;box-shadow:0 0 0 1px rgba(19,33,31,.06)}
+h1,.headline,.sec,.modalTitle,.amount{font-family:Fraunces,Georgia,serif;letter-spacing:-.025em}
+h1{font-size:18px!important}.tiny{color:var(--muted)!important}.headline{font-size:clamp(27px,7.2vw,34px)!important;color:var(--ink);line-height:1.03}.hero{padding:15px 2px 8px!important;margin:0!important;background:transparent!important;border:0!important;box-shadow:none!important}
+.card,.panel,.month,.accordion{background:var(--glass)!important;border:0!important;box-shadow:0 0 0 1px rgba(19,33,31,.055),0 2px 8px rgba(19,33,31,.035)!important;border-radius:24px!important;margin-top:12px!important}
+.accordion{overflow:hidden}.trigger{padding:16px!important}.content{padding:0 16px 16px!important}.icon{background:var(--elev)!important;color:var(--g)!important;border-radius:14px!important}.title{font-size:14px!important}.summary{color:var(--muted)!important;max-width:58vw!important}.chev{color:#87928f!important}
+.primary{background:var(--g)!important;color:#f4f0e8!important;border:0!important}.soft{background:#e5f3ef!important;color:var(--g)!important}.ghost{background:var(--elev)!important;color:var(--ink)!important;border:0!important}.danger{background:#fbeeee!important;color:var(--red)!important}.primary,.ghost,.soft,.danger{min-height:44px;border-radius:12px!important;box-shadow:none!important}.statusBtn{min-height:64px;background:var(--elev)!important;border:0!important;border-radius:16px!important}.attn{background:#fff8e8!important}.badge{border-radius:999px!important}.green{background:#e8f5ef!important;color:#1f7a5a!important}.amber{background:#f8efd8!important;color:#8c641f!important}
+.quick button{min-height:66px;background:var(--glass)!important;border:0!important;box-shadow:0 0 0 1px rgba(19,33,31,.055)!important;border-radius:16px!important}.quick i{font-size:19px!important}
+.subtabs{position:sticky;top:72px;z-index:19;padding:5px;background:var(--elev);border-radius:14px;gap:4px!important;scrollbar-width:none}.subtabs button{flex:0 0 auto;background:transparent!important;color:var(--muted)!important;border-radius:10px!important;padding:9px 12px!important}.subtabs button.active{background:var(--glass)!important;color:var(--g)!important;box-shadow:0 0 0 1px rgba(19,33,31,.055)}
+.input{min-height:46px;background:var(--glass)!important;border:1px solid var(--line)!important;border-radius:13px!important;color:var(--ink)}
+.filePick{background:var(--glass)!important;border:1px solid var(--line)!important;border-radius:18px!important;box-shadow:none!important}.fileIcon{background:#e7f4f1!important}.fileAction{color:var(--g)!important}
+.cardVisual{background:linear-gradient(135deg,#0e4a45,#0f6e66)!important;border-radius:24px!important;box-shadow:0 14px 30px rgba(14,74,69,.18)!important}.cardVisual.alt{background:linear-gradient(135deg,#173f46,#557073)!important}
+.nav{position:fixed!important;left:50%!important;transform:translateX(-50%);bottom:max(8px,env(safe-area-inset-bottom))!important;width:min(calc(100% - 16px),39rem)!important;margin:0!important;padding:8px!important;border:0!important;border-radius:22px!important;background:var(--nav)!important;box-shadow:0 10px 30px rgba(8,36,33,.22)!important;backdrop-filter:none!important;z-index:80!important}.nav button{min-height:48px!important;color:rgba(244,240,232,.62)!important;border-radius:14px!important}.nav button.active{background:rgba(255,255,255,.09)!important;color:#f4f0e8!important}.nav .fab{width:52px!important;height:52px!important;min-height:52px!important;margin:-20px auto 0!important;background:var(--amber)!important;color:#2a1e08!important;border:4px solid var(--bg)!important;border-radius:17px!important;font-size:20px!important;box-shadow:0 8px 18px rgba(196,154,74,.28)!important}
+.sheet{align-items:flex-end!important;padding:0!important;background:rgba(8,28,27,.38)!important}.modal{width:min(100%,40rem)!important;max-width:40rem!important;max-height:min(92dvh,calc(100dvh - env(safe-area-inset-top) - 8px))!important;border-radius:28px 28px 0 0!important;background:var(--glass)!important;padding:20px 18px calc(18px + env(safe-area-inset-bottom))!important;box-shadow:0 -18px 50px rgba(8,28,27,.18)!important;overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch}
+#modalBody>button.primary.full:last-child,#modalBody>.grid2:last-child{position:sticky;bottom:0;z-index:12;margin-top:12px!important;background:var(--g)!important;box-shadow:0 -12px 20px var(--glass)!important}
+.dayCell,.editorBtn,.metric,.calMetric,.side{background:var(--elev)!important;border:0!important}.dayCell.today{outline:2px solid var(--g)!important}.editorBtn.selected{background:#e5f3ef!important;color:var(--g)!important}.detected,.ok{background:#e8f5ef!important}.warn{background:#f8efd8!important}.error{background:#fbeeee!important}.donut:after{background:var(--glass)!important}
+.billCard .hf-bill-actions{grid-template-columns:repeat(3,minmax(0,1fr))!important}.groceryCheck{width:44px;min-width:44px;padding:0!important}
+@media(max-width:360px){.grid3.hf-bill-actions{grid-template-columns:repeat(2,minmax(0,1fr))!important}.grid3.hf-bill-actions>button:last-child{grid-column:1/-1}.summary{max-width:52vw!important}.phone{padding-left:8px!important;padding-right:8px!important}.nav{width:calc(100% - 10px)!important}}
+@media(min-width:700px){.phone{max-width:42rem!important}.nav{max-width:41rem!important}.modal{max-width:42rem!important}}
+body.theme-dark{--bg:#0b1615;--glass:#12211f;--elev:#182926;--ink:#eef3f1;--muted:#a8b5b2;--nav:#081211;--line:rgba(238,243,241,.12);background:var(--bg)!important}.theme-dark .card,.theme-dark .panel,.theme-dark .month,.theme-dark .accordion,.theme-dark .modal,.theme-dark .filePick,.theme-dark .input{background:var(--glass)!important;color:var(--ink)!important}.theme-dark .ghost,.theme-dark .statusBtn,.theme-dark .dayCell,.theme-dark .editorBtn,.theme-dark .metric,.theme-dark .calMetric{background:var(--elev)!important;color:var(--ink)!important}.theme-dark .nav .fab{border-color:var(--bg)!important}
+
+</style>
+</head>
+<body>
+<div class="phone">
+<div class="top">
+  <div class="brand"><div class="logo">🏡</div><div><h1>HomeFlow</h1><div class="tiny">household operations & money</div></div></div>
+  <button class="gear" onclick="openSettings()">⚙️</button>
+</div>
+
+<section id="home" class="screen active">
+  <div class="hero"><div id="homeGreeting" class="tiny">Good evening • Wed, 16 Sep 2026</div><div class="headline">Today at My Home</div></div>
+
+  <div class="accordion" id="todayCard">
+    <button class="trigger" onclick="toggleAccordion('todayCard')">
+      <div class="left"><div class="icon">🏠</div><div><div class="title">Today</div><div id="todaySummary" class="summary">Maid working • Milk delivered</div></div></div><div class="chev">›</div>
+    </button>
+    <div class="content"><div class="divider"></div>
+      <div class="statusRow">
+        <button class="statusBtn" onclick="event.stopPropagation();toggleMaid()">🧹<b id="maidState">Working ✓</b><span class="tiny">tap to change</span></button>
+        <button class="statusBtn" onclick="event.stopPropagation();toggleMilk()">🥛<b id="milkState">Delivered ✓</b><span class="tiny">tap to change</span></button>
+      </div>
+      <div class="actions">
+        <button class="soft" id="awayBtn" onclick="event.stopPropagation();toggleAway()">✈️ Out of station</button>
+        <button class="ghost" onclick="event.stopPropagation();verifyToday()">✓ Verify today</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion" id="servicesCard">
+    <button class="trigger" onclick="toggleAccordion('servicesCard')">
+      <div class="left"><div class="icon">🧹</div><div><div class="title">Regular services</div><div class="summary">Payable to date · projection inside</div></div></div>
+      <div style="display:flex;align-items:center;gap:8px"><b id="serviceTotal">₹0</b><div class="chev">›</div></div>
+    </button>
+    <div class="content"><div class="divider"></div>
+      <div id="serviceBreakdown"></div>
+      <button class="ghost full" style="margin-top:10px" onclick="event.stopPropagation();openMonthlyTracker()">🗓️ View / edit monthly tracker</button>
+    </div>
+  </div>
+
+  <div class="accordion" id="monthSpendCard">
+    <button class="trigger" onclick="toggleAccordion('monthSpendCard')">
+      <div class="left"><div class="icon">₹</div><div><div class="title">This month</div><div class="summary">True household spend · September 2026</div></div></div>
+      <div style="display:flex;align-items:center;gap:8px"><b id="homeSpendTotal">₹0</b><div class="chev">›</div></div>
+    </button>
+    <div class="content"><div class="divider"></div><div id="homeCategoryPreview"></div>
+      <button class="ghost full" style="margin-top:10px" onclick="event.stopPropagation();goScreen('review')">📊 Open monthly review</button>
+    </div>
+  </div>
+
+  <div class="accordion attn" id="attentionCard">
+    <button class="trigger" onclick="toggleAccordion('attentionCard')">
+      <div class="left"><div class="icon">⚠️</div><div><div class="title">Needs attention</div><div class="summary">Bills • imports • confirmation</div></div></div>
+      <div style="display:flex;align-items:center;gap:8px"><span id="attentionCount" class="badge amber">0</span><div class="chev">›</div></div>
+    </button>
+    <div class="content"><div class="divider"></div><div id="attentionList"></div></div>
+  </div>
+
+  <div class="card"><div class="sec">Quick add</div><div class="quick" style="margin-top:10px">
+    <button onclick="openTxnModal('EXPENSE','Grocery')"><i>🛒</i>Grocery</button>
+    <button onclick="openTxnModal('EXPENSE','Fuel')"><i>⛽</i>Fuel</button>
+    <button onclick="openTxnModal('EXPENSE','Other')"><i>➕</i>Expense</button>
+    <button onclick="openBillModal()"><i>🧾</i>Bill</button>
+  </div></div>
+</section>
+
+<section id="money" class="screen">
+  <div class="row" style="margin:4px 2px 12px"><div><div class="sec" style="font-size:21px">Money manager</div><div class="tiny">Bills, grocery, expenses, vehicles and cards</div></div><span class="badge green">ON-DEVICE</span></div>
+  <div class="subtabs">
+    <button data-sub="bills" class="active" onclick="switchMoneySub('bills',this)">Bills</button>
+    <button data-sub="grocery" onclick="switchMoneySub('grocery',this)">Grocery</button>
+    <button data-sub="expenses" onclick="switchMoneySub('expenses',this)">Expenses</button>
+    <button data-sub="vehicles" onclick="switchMoneySub('vehicles',this)">Vehicles</button>
+    <button data-sub="cards" onclick="switchMoneySub('cards',this)">Cards</button>
+  </div>
+  <div id="bills" class="subview active"><div id="billsList"></div><button class="primary full" style="margin-top:10px" onclick="openBillModal()">＋ Add bill / recurring monthly bill</button></div>
+  <div id="grocery" class="subview"><div class="card"><div class="sec">Shopping list</div><div class="tiny">Keep the list separate from money. Checking an item never creates a transaction.</div><div id="grocerySimpleList" style="margin-top:10px"></div><div class="grid2" style="margin-top:10px"><input id="groceryQuick" class="input" placeholder="Add grocery item"><button class="primary" onclick="addGrocerySimple()">Add</button></div></div><div class="card"><div class="sec">Purchases</div><div id="groceryPurchases"></div><button class="primary full" style="margin-top:10px" onclick="openTxnModal('EXPENSE','Grocery')">Finish shopping / add purchase</button></div></div>
+  <div id="expenses" class="subview"><div id="expenseList"></div><button class="primary full" style="margin-top:10px" onclick="openTxnModal('EXPENSE','Other')">＋ Add transaction</button></div>
+  <div id="vehicles" class="subview"><div id="vehicleList"></div><button class="primary full" style="margin-top:10px" onclick="openVehicleModal()">＋ Add vehicle / fuel</button></div>
+  <div id="cards" class="subview"><div id="cardsList"></div><button class="primary full" style="margin-top:10px" onclick="openCardModal()">＋ Add payment card</button></div>
+</section>
+
+<section id="import" class="screen">
+  <div class="sec" style="font-size:21px;margin:4px 2px 4px">Import history</div><div class="tiny">XML / ZIP import works fully on-device. Direct SMS stays out of this stable test build.</div>
+  <div class="card">
+    <div class="grid2"><button class="ghost" onclick="toast('Direct SMS is reserved for the separate SMS Lab build')">📱 Direct SMS lab</button><button class="soft" onclick="document.getElementById('importFile').click()">📂 XML / ZIP backup</button></div>
+    <label class="filePick" for="importFile"><div class="fileIcon">💬</div><div class="fileMeta"><div id="fileTitle" class="fileTitle">Select SMS backup</div><div id="fileName" class="fileName">XML or ZIP containing XML</div></div><div class="fileAction">Choose</div></label>
+    <input id="importFile" type="file" accept=".xml,.zip,text/xml,application/xml,application/zip">
+    <div id="detected" class="detected hidden"><div class="row"><div><div class="tiny">Detected backup period</div><div id="detectedRange" class="range">—</div></div><span id="smsCount" class="badge green">0 SMS</span></div><div id="format" class="tiny" style="margin-top:5px"></div></div>
+    <button id="analyseImport" class="primary full" style="margin-top:10px" disabled>Analyse + check duplicates</button><div id="importStatus"></div>
+  </div>
+  <div id="importSummary" class="card hidden"><div class="row"><div><div class="sec">Import analysis</div><div class="tiny">Review before posting</div></div><div id="finCount" class="amount">0</div></div><div class="chips"><span id="exactCount" class="chip">0 exact</span><span id="strongCount" class="chip">0 strong</span><span id="weakCount" class="chip">0 weak</span><span id="cleanCount" class="chip">0 clean</span></div><div class="warn">Exact duplicates are preselected to Ignore. Strong/weak candidates require review.</div></div>
+  <div id="duplicateReview"></div><div id="importMonths"></div>
+  <button id="continueImport" class="primary full hidden" style="margin-top:10px" onclick="prepareImportConfirm()">Continue to import</button>
+</section>
+
+<section id="people" class="screen">
+  <div class="row" style="margin:4px 2px 12px"><div><div class="sec" style="font-size:21px">People & reimbursements</div><div class="tiny">Advances, shared purchases and repayments</div></div><button class="ghost" onclick="openTxnModal('ADVANCE','Other')">＋</button></div>
+  <div id="peopleList"></div>
+  <div class="card"><div class="sec">Money activity types</div>
+    <div class="bill"><div class="row"><div>👤 Advance for someone<div class="tiny">Creates receivable</div></div><span class="badge purple">Not your spend</span></div></div>
+    <div class="bill"><div class="row"><div>↩️ Reimbursement received<div class="tiny">Reduces their balance</div></div><span class="badge green">Not income</span></div></div>
+    <div class="bill"><div class="row"><div>🔁 Own account transfer / card payment<div class="tiny">Avoids double counting</div></div><span class="badge">Excluded</span></div></div>
+  </div>
+</section>
+
+<section id="review" class="screen">
+  <div class="row" style="margin:4px 2px 12px"><div><div class="sec" style="font-size:21px">Monthly review</div><div class="tiny">September 2026</div></div><span id="confirmBadge" class="badge amber">Not confirmed</span></div>
+  <div class="card"><div class="row"><div><div class="tiny">True household spend</div><div id="reviewTotal" class="amount">₹0</div></div><div style="text-align:right"><div class="tiny">Recoverable</div><b id="reviewRecoverable">₹0</b></div></div><div class="tiny" style="margin-top:6px">Recoverables, internal transfers and card payments are excluded from household spending.</div></div>
+  <div class="card"><div class="row"><div><div class="sec">Where the money went</div><div class="tiny">Spend composition</div></div><span class="badge green">100%</span></div><div id="reviewViz"></div><button class="ghost full" style="margin-top:10px" onclick="openMonthlyTracker()">🗓️ Check / edit Maid & Milk calendar</button></div>
+  <div class="card"><div class="sec">Month-end checks</div><div id="reviewChecks"></div></div>
+  <div class="card"><div class="sec">By payment method</div><div id="paymentBreakdown"></div></div>
+  <div class="grid2" style="margin-top:10px"><button class="ghost" onclick="printMonthlyReport()">📄 Preview / save monthly PDF</button><button class="primary" onclick="toggleConfirmMonth()">✓ Confirm month</button></div>
+</section>
+
+<div class="nav">
+  <button data-screen="home" class="active" onclick="goScreen('home',this)"><i>🏠</i>Home</button>
+  <button data-screen="money" onclick="goScreen('money',this)"><i>🧾</i>Money</button>
+  <button data-screen="import" class="fab" onclick="goScreen('import',this)">💬</button>
+  <button data-screen="people" onclick="goScreen('people',this)"><i>👥</i>People</button>
+  <button data-screen="review" onclick="goScreen('review',this)"><i>📊</i>Review</button>
+</div>
+</div>
+
+<div id="sheet" class="sheet"><div class="modal"><div class="row"><div><div id="modalTitle" class="modalTitle">Details</div><div id="modalSub" class="tiny"></div></div><button class="ghost" onclick="closeSheet()">✕</button></div><div id="modalBody"></div></div></div>
+<div id="toast" class="toast">Done</div>
+<div id="printReport"></div>
+
+<script>
+const APP_TODAY=new Date();
+const STORAGE_KEY='homeflow-final-v1';
+let state=loadState();
+
+function initialState(){
+ return {
+  settings:{
+   maidMonthly:2000,milkRate:50,milkQuantity:0.5,
+   notificationDetection:true,smsImport:true,cloudBackup:false,
+   homeName:'My Home',currency:'INR',weekStart:'Monday',dateFormat:'DD/MM/YYYY',numberFormat:'Indian',
+   confirmDelete:true,rememberPayment:true,
+   awayConfirm:true,awayDateRange:true,restoreAfterAway:true,showAwayCalendar:true,returnReminder:false,
+   billReminderDays:3,autoCreateNextBill:true,hidePaidBillsHome:true,upcomingBillDays:15,
+   groceryHomePreview:true,groceryMoveChecked:true,groceryHideChecked:false,groceryRememberQty:true,groceryRememberPrice:true,groceryRememberStore:true,groceryFinishPrompt:true,
+   dailyServiceReminder:true,dailyReminderTime:'20:00',onlyUnverifiedReminder:true,billNotifications:true,cardDueNotifications:true,vehicleNotifications:true,reimbursementNotifications:true,monthEndReminder:true,quietHours:true,quietStart:'22:00',quietEnd:'07:00',
+   duplicateSensitivity:'Balanced',exactAutoIgnore:true,strongAlwaysAsk:true,weakAlwaysAsk:true,learnMerchantRules:true,retainRawImport:true,allowImportUndo:true,
+   reportDetail:'Full',reportIncludePie:true,reportIncludePaymentChart:true,reportIncludeLedger:true,reportIncludeServiceCalendar:true,reportIncludeGrocery:true,reportIncludeVehicles:true,reportIncludeReimbursements:true,reportWarnUnpaid:true,reportWarnDuplicates:true,reportWarnRecoverables:true,
+   localBackup:true,backupFrequency:'Weekly',keepRawMonths:12,appLock:false,biometric:false,lockTimeout:5,hideRecentAmounts:true,
+   theme:'System',density:'Comfortable',showHomeAmounts:true,widgetServiceSlots:4,widgetShowVerify:true,widgetShowAway:true,widgetShowGrocery:true,widgetShowNextBill:true,widgetHideAmounts:false
+  },
+  confirmedMonths:{},
+  tracker:{},
+  cards:[
+   {id:'c1',name:'HDFC Regalia',issuer:'HDFC',network:'Visa',last4:'4821',kind:'Credit',statementDay:4,dueDay:22},
+   {id:'c2',name:'ICICI Platinum',issuer:'ICICI',network:'Visa',last4:'7314',kind:'Credit',statementDay:8,dueDay:26}
+  ],
+  people:[{id:'p1',name:'Rahul'},{id:'p2',name:'Parents'}],
+  vehicles:[
+   {id:'v1',name:'Creta',odo:48510,nextService:50000,insurance:'2027-01-18'},
+   {id:'v2',name:'Activa',odo:12840,nextService:15000,insurance:'2027-03-05'}
+  ],
+  bills:[
+   {id:'b1',name:'Electricity',category:'Bills',amount:2840,due:'2026-09-21',paid:false,recurring:true,payment:'c1'},
+   {id:'b2',name:'Water',category:'Bills',amount:550,due:'2026-09-08',paid:true,paidDate:'2026-09-08',recurring:true,payment:'UPI'},
+   {id:'b3',name:'Internet',category:'Bills',amount:999,due:'2026-09-24',paid:false,recurring:true,payment:'c2'}
+  ],
+  txns:[
+   {id:'t1',date:'2026-09-15',amount:1840,type:'EXPENSE',category:'Grocery',merchant:'Ratnadeep',payment:'c2',forWhom:'household'},
+   {id:'t2',date:'2026-09-10',amount:2200,type:'EXPENSE',category:'Grocery',merchant:'DMart',payment:'c1',forWhom:'household'},
+   {id:'t3',date:'2026-09-05',amount:1540,type:'EXPENSE',category:'Grocery',merchant:'More',payment:'UPI',forWhom:'household'},
+   {id:'t4',date:'2026-09-14',amount:2000,type:'EXPENSE',category:'Fuel',merchant:'IndianOil',payment:'c1',vehicle:'v1',odo:48510,forWhom:'household'},
+   {id:'t5',date:'2026-09-04',amount:1600,type:'EXPENSE',category:'Fuel',merchant:'HP Fuel',payment:'c1',vehicle:'v1',odo:48120,forWhom:'household'},
+   {id:'t6',date:'2026-09-12',amount:800,type:'ADVANCE',category:'Dining',merchant:'Dinner',payment:'c1',person:'p1',forWhom:'p1'},
+   {id:'t7',date:'2026-09-03',amount:3200,type:'ADVANCE',category:'Shopping',merchant:'Amazon',payment:'c1',person:'p1',forWhom:'p1'},
+   {id:'t8',date:'2026-09-12',amount:2000,type:'REIMBURSEMENT',category:'Settlement',merchant:'UPI received',payment:'UPI',person:'p1',forWhom:'p1'},
+   {id:'t9',date:'2026-09-11',amount:1250,type:'EXPENSE',category:'Home',merchant:'AC service',payment:'UPI',forWhom:'household'},
+   {id:'t10',date:'2026-09-08',amount:1200,type:'REFUND',category:'Shopping',merchant:'Amazon refund',payment:'c1',forWhom:'household'}
+  ],
+  lastPaymentByCategory:{Grocery:'c2',Fuel:'c1'},
+  importSessions:[]
+ }
+}
+function loadState(){
+ try{
+  const saved=JSON.parse(localStorage.getItem(STORAGE_KEY));
+  const fresh=initialState();
+  if(!saved)return fresh;
+  saved.settings=Object.assign({},fresh.settings,saved.settings||{});
+  saved.confirmedMonths=saved.confirmedMonths||{};
+  saved.tracker=saved.tracker||{};
+  saved.cards=saved.cards||fresh.cards;
+  saved.people=saved.people||fresh.people;
+  saved.vehicles=saved.vehicles||fresh.vehicles;
+  saved.bills=saved.bills||fresh.bills;
+  saved.txns=saved.txns||fresh.txns;
+  saved.lastPaymentByCategory=saved.lastPaymentByCategory||fresh.lastPaymentByCategory;
+  saved.importSessions=saved.importSessions||[];
+  return saved;
+ }catch(e){return initialState()}
+}
+function saveState(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state));renderAll()}
+function id(prefix){return prefix+Date.now()+Math.random().toString(16).slice(2)}
+function money(n){
+ const s=state?.settings||{};
+ const map={INR:'₹',USD:'$',EUR:'€',GBP:'£',AED:'AED '};
+ const loc=s.numberFormat==='International'?'en-US':'en-IN';
+ return (map[s.currency]||'₹')+Number(n||0).toLocaleString(loc,{minimumFractionDigits:(n%1?2:0),maximumFractionDigits:2})
+}
+function applyAppearance(){
+ const s=state.settings;
+ let dark=s.theme==='Dark'||(s.theme==='System'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);
+ document.body.classList.toggle('theme-dark',dark);
+ document.body.classList.toggle('compact-density',s.density==='Compact');
+}
+function monthKey(d){const x=new Date(d);return `${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,'0')}`}
+const ACTIVE_MONTH='2026-09';
+function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),1400)}
+function toggleAccordion(id){const el=document.getElementById(id);document.querySelectorAll('.accordion.open').forEach(c=>{if(c!==el)c.classList.remove('open')});el.classList.toggle('open')}
+function goScreen(id,btn){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active');else{const b=document.querySelector(`.nav button[data-screen="${id}"]`);if(b)b.classList.add('active')}renderAll()}
+function switchMoneySub(id,btn){document.querySelectorAll('.subview').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.subtabs button').forEach(x=>x.classList.remove('active'));btn.classList.add('active')}
+
+function trackerKey(d){return `2026-09-${String(d).padStart(2,'0')}`}
+function isSunday(d){return new Date(2026,8,d).getDay()===0}
+function defaultDay(d){return {maid:isSunday(d)?'Sunday':'Came',milk:'Delivered',away:false,verified:false,preAwayMaid:null,preAwayMilk:null}}
+function getDay(d){return Object.assign(defaultDay(d),state.tracker[trackerKey(d)]||{})}
+function setDay(d,obj){state.tracker[trackerKey(d)]=Object.assign(getDay(d),obj);saveState()}
+function calcServices(){
+ let scheduled=0,deduct=0,milkDelivered=0,verified=0;const dim=30;
+ for(let d=1;d<=dim;d++){const x=getDay(d);if(!isSunday(d)){scheduled++;if(x.maid!=='Came')deduct++}if(x.milk==='Delivered')milkDelivered++;if(x.verified)verified++}
+ const daily=state.settings.maidMonthly/scheduled,maidPay=(scheduled-deduct)*daily,milkPay=milkDelivered*state.settings.milkRate;
+ return {scheduled,deduct,milkDelivered,verified,daily,maidPay,milkPay,total:maidPay+milkPay,dim}
+}
+function maidLabel(v){return v==='Came'?'Came today':v==='Absent'?'Absent':v==='NotRequired'?'Not required today':v}
+function milkLabel(v){return v==='Delivered'?'Delivered':v==='Skip'?'Skip today':v==='NotDelivered'?'Requested but not delivered':v}
+function syncToday(){
+ const x=getDay(16);
+ document.getElementById('maidState').textContent=maidLabel(x.maid)+(x.maid==='Came'?' ✓':'');
+ document.getElementById('milkState').textContent=milkLabel(x.milk)+(x.milk==='Delivered'?' ✓':'');
+ document.getElementById('todaySummary').textContent=x.away
+  ?'Out of station • Maid not required • Milk skipped'
+  :`${maidLabel(x.maid)} • ${milkLabel(x.milk)}${x.verified?' • Verified':''}`;
+ document.getElementById('awayBtn').textContent=x.away?'✈️ Out of station ON':'✈️ Out of station';
+}
+function toggleMaid(){openTodayMaidMenu()}
+function toggleMilk(){openTodayMilkMenu()}
+function openTodayMaidMenu(){
+ const x=getDay(16);
+ if(x.away){toast('Turn off Out of station before changing Maid');return}
+ openSheet('Maid • Today','Choose what happened today.',`
+  <div class="settingsMenu">
+   <button class="settingEntry" onclick="setTodayMaid('Came')"><span class="sicon">🧹</span><span class="smain"><span class="stitle">Came today</span><span class="ssub">Payable service day</span></span></button>
+   <button class="settingEntry" onclick="setTodayMaid('Absent')"><span class="sicon">👤</span><span class="smain"><span class="stitle">Absent</span><span class="ssub">Deduct one scheduled Maid day</span></span></button>
+   <button class="settingEntry" onclick="setTodayMaid('NotRequired')"><span class="sicon">⏸️</span><span class="smain"><span class="stitle">Not required today</span><span class="ssub">No Maid charge for today</span></span></button>
+  </div>`)
+}
+function setTodayMaid(v){setDay(16,{maid:v,away:false,verified:false});closeSheet()}
+function openTodayMilkMenu(){
+ const x=getDay(16);
+ if(x.away){toast('Turn off Out of station before changing Milk');return}
+ openSheet('Milk • Today','Choose the delivery result.',`
+  <div class="settingsMenu">
+   <button class="settingEntry" onclick="setTodayMilk('Delivered')"><span class="sicon">🥛</span><span class="smain"><span class="stitle">Delivered</span><span class="ssub">Charge ${money(state.settings.milkRate)}</span></span></button>
+   <button class="settingEntry" onclick="setTodayMilk('Skip')"><span class="sicon">⏭️</span><span class="smain"><span class="stitle">Skip today</span><span class="ssub">Not requested • no charge</span></span></button>
+   <button class="settingEntry" onclick="setTodayMilk('NotDelivered')"><span class="sicon">❌</span><span class="smain"><span class="stitle">Requested but not delivered</span><span class="ssub">Requested, but no charge</span></span></button>
+  </div>`)
+}
+function setTodayMilk(v){setDay(16,{milk:v,away:false,verified:false});closeSheet()}
+function toggleAway(){
+ const x=getDay(16),a=!x.away;
+ if(a){
+  setDay(16,{away:true,preAwayMaid:x.maid,preAwayMilk:x.milk,maid:'NotRequired',milk:'Skip',verified:false});
+ }else{
+  setDay(16,{away:false,maid:state.settings.restoreAfterAway!==false?(x.preAwayMaid||'Came'):'Came',milk:state.settings.restoreAfterAway!==false?(x.preAwayMilk||'Delivered'):'Delivered',preAwayMaid:null,preAwayMilk:null,verified:false});
+ }
+}
+function verifyToday(){setDay(16,{verified:true});toast('Today verified ✓')}
+function householdTxns(){return state.txns.filter(t=>monthKey(t.date)===ACTIVE_MONTH)}
+function calcPeople(){
+ const balances={};state.people.forEach(p=>balances[p.id]=0);
+ householdTxns().forEach(t=>{if(t.type==='ADVANCE'&&t.person)balances[t.person]=(balances[t.person]||0)+t.amount;if(t.type==='REIMBURSEMENT'&&t.person)balances[t.person]=(balances[t.person]||0)-t.amount});
+ return balances
+}
+function calcCategories(){
+ const cats={Services:calcServices().total,Bills:0,Grocery:0,Vehicle:0,Home:0,Shopping:0,Dining:0,Other:0};
+ state.bills.filter(b=>monthKey(b.due)===ACTIVE_MONTH).forEach(b=>cats.Bills+=Number(b.amount||0));
+ householdTxns().forEach(t=>{
+  if(t.type==='EXPENSE'){
+   let c=t.category==='Fuel'?'Vehicle':(t.category||'Other');
+   cats[c]=(cats[c]||0)+t.amount
+  }else if(t.type==='REFUND'){
+   let c=t.category==='Fuel'?'Vehicle':(t.category||'Other');cats[c]=(cats[c]||0)-t.amount
+  }
+ });
+ return cats
+}
+function householdSpend(){return Object.values(calcCategories()).reduce((a,b)=>a+b,0)}
+function recoverable(){return Object.values(calcPeople()).reduce((a,b)=>a+Math.max(0,b),0)}
+function paymentTotals(){
+ const out={};state.bills.filter(b=>monthKey(b.due)===ACTIVE_MONTH).forEach(b=>out[b.payment]=(out[b.payment]||0)+b.amount);
+ householdTxns().forEach(t=>{
+  if(['EXPENSE','ADVANCE'].includes(t.type))out[t.payment]=(out[t.payment]||0)+t.amount;
+  if(t.type==='REFUND')out[t.payment]=(out[t.payment]||0)-t.amount
+ });
+ return out
+}
+function paymentName(id){const c=state.cards.find(x=>x.id===id);return c?`${c.name} ••••${c.last4}`:id}
+function attentionItems(){
+ const a=[];state.bills.forEach(b=>{if(monthKey(b.due)===ACTIVE_MONTH&&!b.paid)a.push({text:`${b.name} due`,value:money(b.amount)})});
+ const pending=state.importSessions.filter(s=>s.status==='review').length;if(pending)a.push({text:`${pending} import session needs review`,value:'Review'});
+ if(!state.confirmedMonths[ACTIVE_MONTH])a.push({text:'September not confirmed',value:'Review'});
+ return a
+}
+
+function renderHome(){
+ const hh=document.querySelector('.headline');if(hh)hh.textContent=`Today at ${state.settings.homeName}`;
+ syncToday();const s=calcServices();
+ document.getElementById('homeGreeting').textContent=`${state.settings.homeName} • Wed, 16 Sep 2026`;
+ document.getElementById('serviceTotal').textContent=state.settings.showHomeAmounts?money(s.total):'••••';
+ document.getElementById('serviceBreakdown').innerHTML=`<div class="bill"><div class="row"><div><b>🧹 Maid</b><div class="tiny">${s.scheduled-s.deduct}/${s.scheduled} payable • ${money(s.daily)}/day</div></div><b>${money(s.maidPay)}</b></div></div><div class="bill"><div class="row"><div><b>🥛 Milk</b><div class="tiny">${s.milkDelivered} deliveries × ${money(state.settings.milkRate)}</div></div><b>${money(s.milkPay)}</b></div></div>`;
+ document.getElementById('homeSpendTotal').textContent=state.settings.showHomeAmounts?money(householdSpend()):'••••';const cats=calcCategories();
+ document.getElementById('homeCategoryPreview').innerHTML=Object.entries(cats).filter(([k,v])=>v>0).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([k,v])=>`<div class="bill"><div class="row"><span>${k}</span><b>${money(v)}</b></div></div>`).join('');
+ const att=attentionItems();document.getElementById('attentionCount').textContent=att.length;document.getElementById('attentionList').innerHTML=att.length?att.map(x=>`<div class="bill"><div class="row"><span>${x.text}</span><b>${x.value}</b></div></div>`).join(''):'<div class="ok">Nothing needs attention.</div>'
+}
+
+function renderBills(){
+ document.getElementById('billsList').innerHTML=state.bills.filter(b=>monthKey(b.due)===ACTIVE_MONTH).map(b=>`<div class="card billCard"><div class="row"><div><b>${b.name}</b><div class="${b.paid?'paid':'due'}">${b.paid?'Paid '+(b.paidDate||''):'Due '+b.due}${b.recurring?' • Recurring monthly':''}</div></div><div style="text-align:right"><b>${money(b.amount)}</b><div class="tiny">${paymentName(b.payment)}</div></div></div><div class="grid3 hf-bill-actions" style="margin-top:9px"><button class="ghost" onclick="editBill('${b.id}')">Edit</button><button class="${b.paid?'soft':'primary'}" onclick="toggleBillPaid('${b.id}')">${b.paid?'Mark unpaid':'Mark paid'}</button><button class="danger" onclick="deleteBill('${b.id}')">Delete</button></div></div>`).join('')||'<div class="ok">No bills yet. Add one when needed.</div>'
+}
+function deleteBill(id){const b=state.bills.find(x=>x.id===id);if(!b)return;if(state.settings.confirmDelete&&!confirm(`Delete ${b.name}?`))return;state.bills=state.bills.filter(x=>x.id!==id);saveState();toast('Bill deleted')}
+
+function renderExpenses(){
+ const rows=householdTxns().slice().sort((a,b)=>b.date.localeCompare(a.date));
+ document.getElementById('expenseList').innerHTML=rows.map(t=>`<div class="card"><div class="row"><div><b>${t.merchant||t.category}</b><div class="tiny">${t.date} • ${t.type} • ${t.category}${t.person?' • '+personName(t.person):''}</div></div><div style="text-align:right"><b>${t.type==='REIMBURSEMENT'||t.type==='REFUND'?'-':''}${money(t.amount)}</b><div class="tiny">${paymentName(t.payment)}</div></div></div></div>`).join('')
+}
+function renderVehicles(){
+ document.getElementById('vehicleList').innerHTML=state.vehicles.map(v=>{const fuel=householdTxns().filter(t=>t.category==='Fuel'&&t.vehicle===v.id).reduce((s,t)=>s+t.amount,0);return`<div class="card"><div class="row"><div><b>🚗 ${v.name}</b><div class="tiny">${Number(v.odo).toLocaleString('en-IN')} km</div></div><b>${money(fuel)} fuel</b></div><div class="metricgrid"><div class="metric">Next service<b>${Number(v.nextService).toLocaleString('en-IN')} km</b></div><div class="metric">Insurance<b>${v.insurance}</b></div></div><button class="ghost full" style="margin-top:9px" onclick="openFuelForVehicle('${v.id}')">⛽ Add fuel</button></div>`}).join('')
+}
+function renderCards(){
+ const pt=paymentTotals();document.getElementById('cardsList').innerHTML=state.cards.map((c,i)=>{const charges=pt[c.id]||0;const rec=householdTxns().filter(t=>t.payment===c.id&&t.type==='ADVANCE').reduce((s,t)=>s+t.amount,0);return`<div class="cardVisual ${i%2?'alt':''}" onclick="showCard('${c.id}')"><div class="row"><b>${c.name}</b><span>${c.network}</span></div><div class="last4">•••• ${c.last4}</div><div class="spend">${money(charges)}</div><div class="label">September recorded charges</div><div class="row" style="margin-top:10px"><span class="tiny" style="color:#fff">${c.kind}</span><span class="tiny" style="color:#fff">Recoverable ${money(rec)}</span></div></div>`}).join('')
+}
+function renderPeople(){
+ const bal=calcPeople();document.getElementById('peopleList').innerHTML=state.people.map(p=>`<div class="card" onclick="showPerson('${p.id}')"><div class="row"><div><b>👤 ${p.name}</b><div class="recover">Tap for ledger</div></div><b>${money(Math.max(0,bal[p.id]||0))} due</b></div></div>`).join('')
+}
+function personName(id){return state.people.find(p=>p.id===id)?.name||id}
+
+function renderReview(){
+ const total=householdSpend(),rec=recoverable();document.getElementById('reviewTotal').textContent=money(total);document.getElementById('reviewRecoverable').textContent=money(rec);
+ document.getElementById('confirmBadge').textContent=state.confirmedMonths[ACTIVE_MONTH]?'Confirmed':'Not confirmed';document.getElementById('confirmBadge').className='badge '+(state.confirmedMonths[ACTIVE_MONTH]?'green':'amber');
+ const cats=calcCategories(), entries=Object.entries(cats).filter(([k,v])=>v>0);const palette=['#2f9d6a','#e5a13b','#3b86ca','#d95d62','#7b6fd0','#52a6a1','#d48a45'];let start=0,stops=[];entries.forEach(([k,v],i)=>{const pct=v/total*100;stops.push(`${palette[i%palette.length]} ${start}% ${start+pct}%`);start+=pct});
+ const legend=entries.sort((a,b)=>b[1]-a[1]).map(([k,v],i)=>`<div class="vizItem"><span class="vizName"><span class="dot" style="background:${palette[i%palette.length]}"></span>${k}</span><b>${money(v)}</b></div>`).join('');
+ document.getElementById('reviewViz').innerHTML=`<div class="reviewViz"><div class="donut" style="background:conic-gradient(${stops.join(',')})"><div class="donutCenter"><small>Total</small><b>${money(total)}</b></div></div><div class="vizLegend">${legend}</div></div>`;
+ const checks=attentionItems();document.getElementById('reviewChecks').innerHTML=checks.length?checks.map(x=>`<div class="bill"><div class="row"><span>${x.text}</span><b>${x.value}</b></div></div>`).join(''):'<div class="ok">All month-end checks clear.</div>';
+ const pt=paymentTotals();document.getElementById('paymentBreakdown').innerHTML=Object.entries(pt).filter(([k,v])=>Math.abs(v)>0.001).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div class="bill"><div class="row"><span>${paymentName(k)}</span><b>${money(v)}</b></div></div>`).join('')
+}
+
+function ensureGroceryState(){if(!state.groceryItems)state.groceryItems=[{id:'g1',name:'Milk',checked:false},{id:'g2',name:'Tomatoes',checked:false},{id:'g3',name:'Rice',checked:true}]}
+function addGrocerySimple(){ensureGroceryState();const i=document.getElementById('groceryQuick');if(!i||!i.value.trim())return;state.groceryItems.push({id:id('g'),name:i.value.trim(),checked:false});saveState();i.value=''}
+function toggleGrocerySimple(gid){ensureGroceryState();const g=state.groceryItems.find(x=>x.id===gid);if(g){g.checked=!g.checked;saveState()}}
+function deleteGrocerySimple(gid){ensureGroceryState();state.groceryItems=state.groceryItems.filter(x=>x.id!==gid);saveState()}
+function renderGrocerySimple(){ensureGroceryState();const l=document.getElementById('grocerySimpleList');if(l)l.innerHTML=state.groceryItems.map(g=>`<div class="bill"><div class="row"><button class="ghost groceryCheck" onclick="toggleGrocerySimple('${g.id}')">${g.checked?'✓':'○'}</button><span style="flex:1;${g.checked?'text-decoration:line-through;opacity:.55':''}">${esc(g.name)}</span><button class="ghost" onclick="deleteGrocerySimple('${g.id}')">✕</button></div></div>`).join('')||'<div class="tiny">List is clear.</div>';const p=document.getElementById('groceryPurchases');if(p)p.innerHTML=state.txns.filter(t=>monthKey(t.date)===ACTIVE_MONTH&&t.category==='Grocery'&&t.type==='EXPENSE').sort((a,b)=>b.date.localeCompare(a.date)).map(t=>`<div class="bill"><div class="row"><div>${t.merchant||'Grocery'}<div class="tiny">${t.date}</div></div><b>${money(t.amount)}</b></div></div>`).join('')||'<div class="tiny">No grocery purchases yet.</div>'}
+
+function renderAll(){applyAppearance();renderHome();renderBills();renderGrocerySimple();renderExpenses();renderVehicles();renderCards();renderPeople();renderReview()}
+
+function openMonthlyTracker(){
+ let first=(new Date(2026,8,1).getDay()+6)%7,cells='';for(let i=0;i<first;i++)cells+='<div class="dayCell empty"></div>';
+ for(let d=1;d<=30;d++){const x=getDay(d),mflag=isSunday(d)?'⚪':x.maid==='Came'?'🟢':x.maid==='Absent'?'🔴':'⏸️',kflag=x.milk==='Delivered'?'🔵':x.milk==='Skip'?'🟠':'❌',flags=x.away?'✈️':`${mflag} ${kflag} ${x.verified?'✓':''}`;cells+=`<button class="dayCell ${isSunday(d)?'sun':''} ${d===16?'today':''}" onclick="openDayEditor(${d})"><div class="dayNum">${d}</div><div class="dayFlags">${flags}</div></button>`}
+ const c=calcServices();openSheet('September 2026','Tap any date to check or correct Maid, Milk or Away.',`<div class="calendarHead"><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div><div>Sun</div></div><div class="calendarGrid">${cells}</div><div class="calLegend"><span>🟢 Maid came</span><span>🔴 Maid absent</span><span>⏸️ Not required / Skip</span><span>🔵 Milk delivered</span><span>❌ Milk not delivered</span><span>✈️ Away</span><span>⚪ Sunday</span><span>✓ Verified</span></div><div class="calSummary"><div class="calMetric">Maid payable<b>${money(c.maidPay)}</b></div><div class="calMetric">Milk payable<b>${money(c.milkPay)}</b></div><div class="calMetric">Maid deductions<b>${c.deduct} days</b></div><div class="calMetric">Verified<b>${c.verified}/${c.dim}</b></div></div>`)
+}
+function openDayEditor(d){
+ const x=getDay(d),label=new Date(2026,8,d).toLocaleDateString('en-GB',{weekday:'short',day:'2-digit',month:'short',year:'numeric'});
+ openSheet(label,'Edit services for this date. Out of station updates both services.',`
+  <div class="editorSection">
+   <div class="tiny">Maid</div>
+   <div class="grid3" style="margin-top:8px">
+    <button class="editorBtn ${x.maid==='Came'&&!x.away?'selected':''}" onclick="setEditor(${d},'maid','Came')">🧹 Came today</button>
+    <button class="editorBtn ${x.maid==='Absent'&&!x.away?'selected':''}" onclick="setEditor(${d},'maid','Absent')">👤 Absent</button>
+    <button class="editorBtn ${x.maid==='NotRequired'&&!x.away?'selected':''}" onclick="setEditor(${d},'maid','NotRequired')">⏸️ Not required</button>
+   </div>
+   <div class="tiny" style="margin-top:12px">Milk</div>
+   <div class="grid3" style="margin-top:8px">
+    <button class="editorBtn ${x.milk==='Delivered'&&!x.away?'selected':''}" onclick="setEditor(${d},'milk','Delivered')">🥛 Delivered</button>
+    <button class="editorBtn ${x.milk==='Skip'&&!x.away?'selected':''}" onclick="setEditor(${d},'milk','Skip')">⏭️ Skip today</button>
+    <button class="editorBtn ${x.milk==='NotDelivered'&&!x.away?'selected':''}" onclick="setEditor(${d},'milk','NotDelivered')">❌ Requested, not delivered</button>
+   </div>
+   <button class="${x.away?'primary':'ghost'} full" style="margin-top:10px" onclick="toggleDayAway(${d})">✈️ ${x.away?'Out of station ON':'Out of station'}</button>
+   <button class="${x.verified?'soft':'ghost'} full" style="margin-top:8px" onclick="setDay(${d},{verified:${!x.verified}});openDayEditor(${d})">✓ ${x.verified?'Verified':'Mark verified'}</button>
+  </div>
+  <div class="grid2" style="margin-top:10px"><button class="ghost" onclick="openMonthlyTracker()">← Back to month</button><button class="primary" onclick="closeSheet()">Done</button></div>`)
+}
+function setEditor(d,type,val){setDay(d,{[type]:val,away:false,verified:false});openDayEditor(d)}
+function toggleDayAway(d){
+ const x=getDay(d),a=!x.away;
+ if(a){
+  setDay(d,{away:true,preAwayMaid:x.maid,preAwayMilk:x.milk,maid:isSunday(d)?'Sunday':'NotRequired',milk:'Skip',verified:false});
+ }else{
+  setDay(d,{away:false,maid:isSunday(d)?'Sunday':(state.settings.restoreAfterAway!==false?(x.preAwayMaid||'Came'):'Came'),milk:state.settings.restoreAfterAway!==false?(x.preAwayMilk||'Delivered'):'Delivered',preAwayMaid:null,preAwayMilk:null,verified:false});
+ }
+ openDayEditor(d)
+}
+
+function openBillModal(existingId){const b=existingId?state.bills.find(x=>x.id===existingId):{name:'',amount:'',due:'2026-09-25',paid:false,recurring:true,payment:'UPI'};openSheet(existingId?'Edit bill':'Add bill','Monthly utilities, maintenance, subscriptions or any recurring bill.',`<input id="billName" class="input" placeholder="Bill name" value="${escAttr(b.name)}"><input id="billAmount" class="input" type="number" placeholder="Amount ₹" value="${b.amount}"><input id="billDue" class="input" type="date" value="${b.due}"><select id="billPay" class="input">${paymentOptions(b.payment)}</select><label class="line" style="display:flex;gap:8px"><input id="billRecurring" type="checkbox" ${b.recurring?'checked':''}> Recurring monthly bill</label><button class="primary full" style="margin-top:10px" onclick="saveBill('${existingId||''}')">Save bill</button>`)}
+function saveBill(existingId){const obj={id:existingId||id('b'),name:val('billName'),category:'Bills',amount:Number(val('billAmount')||0),due:val('billDue'),paid:false,recurring:document.getElementById('billRecurring').checked,payment:val('billPay')};if(existingId){const old=state.bills.find(x=>x.id===existingId);Object.assign(old,obj)}else state.bills.push(obj);saveState();closeSheet();toast('Bill saved ✓')}
+function editBill(id){openBillModal(id)}
+function toggleBillPaid(id){const b=state.bills.find(x=>x.id===id);b.paid=!b.paid;b.paidDate=b.paid?APP_TODAY.toISOString().slice(0,10):null;saveState()}
+
+function openTxnModal(type='EXPENSE',category='Other',vehicle='',person=''){const defaultPay=state.lastPaymentByCategory[category]||'UPI';openSheet('Add money activity','One transaction can appear in month, card, person and vehicle views.',`<select id="txnType" class="input"><option ${type==='EXPENSE'?'selected':''}>EXPENSE</option><option ${type==='ADVANCE'?'selected':''}>ADVANCE</option><option>REIMBURSEMENT</option><option>REFUND</option><option>INTERNAL_TRANSFER</option><option>CARD_PAYMENT</option></select><input id="txnDate" class="input" type="date" value="2026-09-16"><input id="txnAmount" class="input" type="number" placeholder="Amount ₹"><input id="txnMerchant" class="input" placeholder="Merchant / note"><select id="txnCategory" class="input">${['Grocery','Fuel','Bills','Home','Dining','Shopping','Medical','Other','Settlement'].map(x=>`<option ${x===category?'selected':''}>${x}</option>`).join('')}</select><select id="txnPayment" class="input">${paymentOptions(defaultPay)}</select><select id="txnPerson" class="input"><option value="">For: My household</option>${state.people.map(p=>`<option value="${p.id}" ${p.id===person?'selected':''}>For: ${p.name}</option>`).join('')}</select><select id="txnVehicle" class="input"><option value="">No vehicle</option>${state.vehicles.map(v=>`<option value="${v.id}" ${v.id===vehicle?'selected':''}>${v.name}</option>`).join('')}</select><input id="txnOdo" class="input" type="number" placeholder="Odometer (optional)"><input id="txnReceipt" class="input" type="file" accept="image/*,.pdf"><button class="primary full" style="margin-top:10px" onclick="saveTxn()">Save activity</button>`)}
+function saveTxn(){const t={id:id('t'),date:val('txnDate'),amount:Number(val('txnAmount')||0),type:val('txnType'),category:val('txnCategory'),merchant:val('txnMerchant'),payment:val('txnPayment'),person:val('txnPerson')||null,vehicle:val('txnVehicle')||null,odo:Number(val('txnOdo')||0)||null,forWhom:val('txnPerson')||'household'};if(t.type==='ADVANCE'&&!t.person){toast('Choose the person this advance is for');return}if(t.type==='REIMBURSEMENT'&&!t.person){toast('Choose who reimbursed you');return}state.txns.push(t);if(t.type==='EXPENSE')state.lastPaymentByCategory[t.category]=t.payment;if(t.vehicle&&t.odo){const v=state.vehicles.find(x=>x.id===t.vehicle);if(v)v.odo=Math.max(v.odo,t.odo)}saveState();closeSheet();toast('Transaction saved ✓')}
+function openFuelForVehicle(v){openTxnModal('EXPENSE','Fuel',v,'')}
+function openVehicleModal(){openSheet('Add vehicle','Track fuel, service, insurance and odometer.',`<input id="vName" class="input" placeholder="Vehicle name"><input id="vOdo" class="input" type="number" placeholder="Current odometer"><input id="vService" class="input" type="number" placeholder="Next service km"><input id="vInsurance" class="input" type="date"><button class="primary full" style="margin-top:10px" onclick="saveVehicle()">Save vehicle</button>`)}
+function saveVehicle(){state.vehicles.push({id:id('v'),name:val('vName'),odo:Number(val('vOdo')||0),nextService:Number(val('vService')||0),insurance:val('vInsurance')});saveState();closeSheet()}
+function openCardModal(){openSheet('Add payment card','Only nickname, issuer, network and last 4 digits are stored.',`<input id="cardName" class="input" placeholder="Card nickname"><input id="cardIssuer" class="input" placeholder="Bank / issuer"><select id="cardNetwork" class="input"><option>Visa</option><option>Mastercard</option><option>RuPay</option><option>Amex</option></select><input id="cardLast4" class="input" maxlength="4" placeholder="Last 4 digits"><select id="cardKind" class="input"><option>Credit</option><option>Debit</option></select><div class="grid2"><input id="cardStmt" class="input" type="number" min="1" max="31" placeholder="Statement day"><input id="cardDue" class="input" type="number" min="1" max="31" placeholder="Due day"></div><button class="primary full" style="margin-top:10px" onclick="saveCard()">Save card</button>`)}
+function saveCard(){const l=val('cardLast4');if(!/^\d{4}$/.test(l)){toast('Enter only the last 4 digits');return}state.cards.push({id:id('c'),name:val('cardName'),issuer:val('cardIssuer'),network:val('cardNetwork'),last4:l,kind:val('cardKind'),statementDay:Number(val('cardStmt')||0),dueDay:Number(val('cardDue')||0)});saveState();closeSheet()}
+function showCard(cid){const c=state.cards.find(x=>x.id===cid),rows=householdTxns().filter(t=>t.payment===cid);openSheet(`${c.name} ••••${c.last4}`,'Billing-cycle / purchase view',rows.map(t=>`<div class="bill"><div class="row"><div><b>${t.date} • ${t.merchant}</b><div class="tiny">${t.category} • ${t.type}${t.person?' • '+personName(t.person):''}</div></div><b>${t.type==='REFUND'?'-':''}${money(t.amount)}</b></div></div>`).join('')||'<div class="ok">No transactions.</div>')}
+function showPerson(pid){const p=state.people.find(x=>x.id===pid),rows=householdTxns().filter(t=>t.person===pid),bal=calcPeople()[pid]||0;openSheet(p.name,'Reimbursement ledger',`<div class="panel"><div class="tiny">Still owed to you</div><div class="amount">${money(Math.max(0,bal))}</div></div>${rows.map(t=>`<div class="bill"><div class="row"><div><b>${t.date} • ${t.merchant}</b><div class="${t.type==='REIMBURSEMENT'?'paid':'recover'}">${t.type}</div></div><b>${t.type==='REIMBURSEMENT'?'-':'+'}${money(t.amount)}</b></div></div>`).join('')}<button class="primary full" style="margin-top:10px" onclick="openTxnModal('REIMBURSEMENT','Settlement','','${pid}')">＋ Record reimbursement</button>`)}
+
+function paymentOptions(selected){return `${state.cards.map(c=>`<option value="${c.id}" ${selected===c.id?'selected':''}>${c.name} ••••${c.last4}</option>`).join('')}<option ${selected==='UPI'?'selected':''}>UPI</option><option ${selected==='Cash'?'selected':''}>Cash</option><option ${selected==='Bank'?'selected':''}>Bank</option>`}
+function boolChecked(v){return v?'checked':''}
+function settingsBack(){openSettings()}
+function settingEntry(icon,title,sub,key,badge=''){
+ return `<button class="settingEntry" onclick="openSettingsSection('${key}')"><span class="sicon">${icon}</span><span class="smain"><span class="stitle">${title}</span><span class="ssub">${sub}</span></span>${badge?`<span class="previewPill">${badge}</span>`:''}<span class="chev">›</span></button>`
+}
+function openSettings(){
+ const s=state.settings;
+ openSheet('Settings',`${s.homeName} • Offline-first household manager`,`
+  <div class="settingsMenu">
+   ${settingEntry('🏠','General','Home, currency, dates and everyday behavior','general',s.currency)}
+   ${settingEntry('🧹','Home & services','Maid, Milk, Out of station and service behavior','services',money(s.maidMonthly))}
+   ${settingEntry('₹','Money & bills','Recurring bills, reminders and payment defaults','money',s.billReminderDays+'d')}
+   ${settingEntry('🛒','Grocery','Shopping-list behavior and finish-shopping flow','grocery',s.groceryHomePreview?'Home preview':'Hidden')}
+   ${settingEntry('🔔','Notifications','Daily services, bills, cards and quiet hours','notifications',s.dailyServiceReminder?s.dailyReminderTime:'Off')}
+   ${settingEntry('💬','Imports & automation','SMS/XML, duplicate handling and learning','imports',s.smsImport?'SMS on':'SMS off')}
+   ${settingEntry('📊','Monthly reports','PDF content, charts and month-end warnings','reports',s.reportDetail)}
+   ${settingEntry('🔐','Backup & privacy','Local backup, cloud, lock and privacy','privacy',s.cloudBackup?'Cloud on':'Device only')}
+   ${settingEntry('🎨','Appearance & widget','Theme, density and widget visibility','appearance',s.theme)}
+   ${settingEntry('ℹ️','About','Data model, privacy and prototype information','about','vNext')}
+  </div>
+  <div class="settingsFooter"><button class="ghost" onclick="exportSettings()">Export settings</button><button class="danger" onclick="resetPrototype()">Reset prototype</button></div>`)
+}
+function openSettingsSection(key){
+ const s=state.settings;
+ if(key==='general')openSheet('General','Basic app and household preferences.',`
+  <div class="settingBlock">
+   <div class="settingRow"><div class="copy"><b>Home name</b><div class="tiny">Shown in HomeFlow summaries</div></div><input id="setHomeName" type="text" value="${escAttr(s.homeName)}"></div>
+   <div class="settingRow"><div class="copy"><b>Default currency</b></div><select id="setCurrency"><option ${s.currency==='INR'?'selected':''}>INR</option><option ${s.currency==='USD'?'selected':''}>USD</option><option ${s.currency==='EUR'?'selected':''}>EUR</option><option ${s.currency==='GBP'?'selected':''}>GBP</option><option ${s.currency==='AED'?'selected':''}>AED</option></select></div>
+   <div class="settingRow"><div class="copy"><b>Week starts</b></div><select id="setWeekStart"><option ${s.weekStart==='Monday'?'selected':''}>Monday</option><option ${s.weekStart==='Sunday'?'selected':''}>Sunday</option></select></div>
+   <div class="settingRow"><div class="copy"><b>Date format</b></div><select id="setDateFormat"><option ${s.dateFormat==='DD/MM/YYYY'?'selected':''}>DD/MM/YYYY</option><option ${s.dateFormat==='MM/DD/YYYY'?'selected':''}>MM/DD/YYYY</option><option ${s.dateFormat==='YYYY-MM-DD'?'selected':''}>YYYY-MM-DD</option></select></div>
+   <div class="settingRow"><div class="copy"><b>Number grouping</b><div class="tiny">Indian gives ₹1,25,000</div></div><select id="setNumberFormat"><option ${s.numberFormat==='Indian'?'selected':''}>Indian</option><option ${s.numberFormat==='International'?'selected':''}>International</option></select></div>
+   <div class="settingRow"><div class="copy"><b>Remember last payment method</b></div><input id="setRememberPay" type="checkbox" ${boolChecked(s.rememberPayment)}></div>
+   <div class="settingRow"><div class="copy"><b>Confirm before deleting</b></div><input id="setConfirmDelete" type="checkbox" ${boolChecked(s.confirmDelete)}></div>
+  </div>${settingsSaveBar('general')}`)
+ else if(key==='services')openSheet('Home & services','Core Maid/Milk rules and Out-of-station behavior.',`
+  <div class="settingBlock"><div class="settingBlockTitle">Core services</div>
+   <div class="settingRow"><div class="copy"><b>🧹 Maid monthly amount</b><div class="tiny">Daily rate = monthly amount ÷ Mon–Sat days</div></div><input id="setMaid" type="number" value="${s.maidMonthly}"></div>
+   <div class="settingRow"><div class="copy"><b>🥛 Milk per ½ litre</b></div><input id="setMilk" type="number" value="${s.milkRate}"></div>
+   <div class="settingRow"><div class="copy"><b>Default Milk quantity</b></div><select id="setMilkQty"><option value="0.5" ${s.milkQuantity==0.5?'selected':''}>½ litre</option><option value="1" ${s.milkQuantity==1?'selected':''}>1 litre</option><option value="1.5" ${s.milkQuantity==1.5?'selected':''}>1½ litre</option><option value="2" ${s.milkQuantity==2?'selected':''}>2 litres</option></select></div>
+  </div>
+  <div class="settingBlock"><div class="settingBlockTitle">Daily status wording</div>
+   <div class="tiny">Maid: <b>Came today / Absent / Not required today</b></div>
+   <div class="tiny" style="margin-top:5px">Milk: <b>Delivered / Skip today / Requested but not delivered</b></div>
+  </div>
+  <div class="settingBlock"><div class="settingBlockTitle">Out of station</div>
+   <div class="settingRow"><div class="copy"><b>Ask before applying</b></div><input id="setAwayConfirm" type="checkbox" ${boolChecked(s.awayConfirm)}></div>
+   <div class="settingRow"><div class="copy"><b>Allow date range</b><div class="tiny">Useful for trips lasting several days</div></div><input id="setAwayRange" type="checkbox" ${boolChecked(s.awayDateRange)}></div>
+   <div class="settingRow"><div class="copy"><b>Restore previous states when cancelled</b></div><input id="setAwayRestore" type="checkbox" ${boolChecked(s.restoreAfterAway)}></div>
+   <div class="settingRow"><div class="copy"><b>Show Away in Services Calendar</b></div><input id="setAwayCalendar" type="checkbox" ${boolChecked(s.showAwayCalendar)}></div>
+   <div class="settingRow"><div class="copy"><b>Return-date reminder</b></div><input id="setReturnReminder" type="checkbox" ${boolChecked(s.returnReminder)}></div>
+  </div>${settingsSaveBar('services')}`)
+ else if(key==='money')openSheet('Money & bills','Default recurring-bill and transaction behavior.',`
+  <div class="settingBlock">
+   <div class="settingRow"><div class="copy"><b>Bill reminder</b><div class="tiny">Days before due date</div></div><input id="setBillDays" type="number" min="0" max="30" value="${s.billReminderDays}"></div>
+   <div class="settingRow"><div class="copy"><b>Auto-create next recurring bill</b></div><input id="setAutoBill" type="checkbox" ${boolChecked(s.autoCreateNextBill)}></div>
+   <div class="settingRow"><div class="copy"><b>Hide paid bills on Home</b></div><input id="setHidePaid" type="checkbox" ${boolChecked(s.hidePaidBillsHome)}></div>
+   <div class="settingRow"><div class="copy"><b>Upcoming-bill window</b></div><select id="setUpcoming"><option ${s.upcomingBillDays==7?'selected':''} value="7">7 days</option><option ${s.upcomingBillDays==15?'selected':''} value="15">15 days</option><option ${s.upcomingBillDays==30?'selected':''} value="30">30 days</option></select></div>
+   <div class="settingRow"><div class="copy"><b>Remember payment method by category</b></div><input id="setMoneyRemember" type="checkbox" ${boolChecked(s.rememberPayment)}></div>
+  </div>${settingsSaveBar('money')}`)
+ else if(key==='grocery')openSheet('Grocery','Preferences for the planned Shopping List + Purchases workflow.',`
+  <div class="settingBlock">
+   <div class="settingRow"><div class="copy"><b>Show Grocery preview on Home</b></div><input id="setGHome" type="checkbox" ${boolChecked(s.groceryHomePreview)}></div>
+   <div class="settingRow"><div class="copy"><b>Move checked items to bottom</b></div><input id="setGMove" type="checkbox" ${boolChecked(s.groceryMoveChecked)}></div>
+   <div class="settingRow"><div class="copy"><b>Hide checked items automatically</b></div><input id="setGHide" type="checkbox" ${boolChecked(s.groceryHideChecked)}></div>
+   <div class="settingRow"><div class="copy"><b>Remember usual quantity</b></div><input id="setGQty" type="checkbox" ${boolChecked(s.groceryRememberQty)}></div>
+   <div class="settingRow"><div class="copy"><b>Remember usual price</b></div><input id="setGPrice" type="checkbox" ${boolChecked(s.groceryRememberPrice)}></div>
+   <div class="settingRow"><div class="copy"><b>Remember usual store</b></div><input id="setGStore" type="checkbox" ${boolChecked(s.groceryRememberStore)}></div>
+   <div class="settingRow"><div class="copy"><b>Ask total/payment after shopping</b><div class="tiny">Creates one Grocery transaction when a trip is finished</div></div><input id="setGFinish" type="checkbox" ${boolChecked(s.groceryFinishPrompt)}></div>
+  </div>${settingsSaveBar('grocery')}`)
+ else if(key==='notifications')openSheet('Notifications','Choose what deserves your attention.',`
+  <div class="settingBlock">
+   <div class="settingRow"><div class="copy"><b>Daily services reminder</b></div><input id="setDailyRem" type="checkbox" ${boolChecked(s.dailyServiceReminder)}></div>
+   <div class="settingRow"><div class="copy"><b>Reminder time</b></div><input id="setDailyTime" type="time" value="${s.dailyReminderTime}"></div>
+   <div class="settingRow"><div class="copy"><b>Only if day is unverified</b></div><input id="setOnlyUnverified" type="checkbox" ${boolChecked(s.onlyUnverifiedReminder)}></div>
+   <div class="settingRow"><div class="copy"><b>Bill due reminders</b></div><input id="setBillNot" type="checkbox" ${boolChecked(s.billNotifications)}></div>
+   <div class="settingRow"><div class="copy"><b>Credit-card due reminders</b></div><input id="setCardNot" type="checkbox" ${boolChecked(s.cardDueNotifications)}></div>
+   <div class="settingRow"><div class="copy"><b>Vehicle service / insurance</b></div><input id="setVehNot" type="checkbox" ${boolChecked(s.vehicleNotifications)}></div>
+   <div class="settingRow"><div class="copy"><b>Reimbursement reminders</b></div><input id="setReimNot" type="checkbox" ${boolChecked(s.reimbursementNotifications)}></div>
+   <div class="settingRow"><div class="copy"><b>Month-end review reminder</b></div><input id="setMonthNot" type="checkbox" ${boolChecked(s.monthEndReminder)}></div>
+  </div>
+  <div class="settingBlock"><div class="settingBlockTitle">Quiet hours</div>
+   <div class="settingRow"><div class="copy"><b>Enable quiet hours</b></div><input id="setQuiet" type="checkbox" ${boolChecked(s.quietHours)}></div>
+   <div class="settingRow"><div class="copy"><b>From</b></div><input id="setQuietStart" type="time" value="${s.quietStart}"></div>
+   <div class="settingRow"><div class="copy"><b>Until</b></div><input id="setQuietEnd" type="time" value="${s.quietEnd}"></div>
+  </div>${settingsSaveBar('notifications')}`)
+ else if(key==='imports')openSheet('Imports & automation','Review-first transaction detection and duplicate handling.',`
+  <div class="settingBlock">
+   <div class="settingRow"><div class="copy"><b>Transaction notification detection</b><div class="tiny">Android permission required</div></div><input id="setNotif" type="checkbox" ${boolChecked(s.notificationDetection)}></div>
+   <div class="settingRow"><div class="copy"><b>Direct SMS history import</b><div class="tiny">XML/ZIP remains available without this permission</div></div><input id="setSms" type="checkbox" ${boolChecked(s.smsImport)}></div>
+   <div class="settingRow"><div class="copy"><b>Duplicate sensitivity</b></div><select id="setDupSens"><option ${s.duplicateSensitivity==='Conservative'?'selected':''}>Conservative</option><option ${s.duplicateSensitivity==='Balanced'?'selected':''}>Balanced</option><option ${s.duplicateSensitivity==='Aggressive'?'selected':''}>Aggressive</option></select></div>
+   <div class="settingRow"><div class="copy"><b>Exact duplicate → suggest Ignore</b></div><input id="setExactIgnore" type="checkbox" ${boolChecked(s.exactAutoIgnore)}></div>
+   <div class="settingRow"><div class="copy"><b>Strong duplicates always ask</b></div><input id="setStrongAsk" type="checkbox" ${boolChecked(s.strongAlwaysAsk)}></div>
+   <div class="settingRow"><div class="copy"><b>Weak duplicates always ask</b></div><input id="setWeakAsk" type="checkbox" ${boolChecked(s.weakAlwaysAsk)}></div>
+   <div class="settingRow"><div class="copy"><b>Learn merchant/category corrections</b></div><input id="setLearnMerchant" type="checkbox" ${boolChecked(s.learnMerchantRules)}></div>
+   <div class="settingRow"><div class="copy"><b>Keep original imported message</b></div><input id="setRetainRaw" type="checkbox" ${boolChecked(s.retainRawImport)}></div>
+   <div class="settingRow"><div class="copy"><b>Allow import-session undo</b></div><input id="setImportUndo" type="checkbox" ${boolChecked(s.allowImportUndo)}></div>
+  </div>${settingsSaveBar('imports')}`)
+ else if(key==='reports')openSheet('Monthly reports','Choose what appears in the month-end PDF.',`
+  <div class="settingBlock">
+   <div class="settingRow"><div class="copy"><b>PDF detail level</b></div><select id="setReportDetail"><option ${s.reportDetail==='Summary'?'selected':''}>Summary</option><option ${s.reportDetail==='Full'?'selected':''}>Full</option></select></div>
+   <div class="settingRow"><div class="copy"><b>Include category pie chart</b></div><input id="setRPie" type="checkbox" ${boolChecked(s.reportIncludePie)}></div>
+   <div class="settingRow"><div class="copy"><b>Include payment-method chart</b></div><input id="setRPay" type="checkbox" ${boolChecked(s.reportIncludePaymentChart)}></div>
+   <div class="settingRow"><div class="copy"><b>Include transaction ledger</b></div><input id="setRLedger" type="checkbox" ${boolChecked(s.reportIncludeLedger)}></div>
+   <div class="settingRow"><div class="copy"><b>Include Services Calendar summary</b></div><input id="setRService" type="checkbox" ${boolChecked(s.reportIncludeServiceCalendar)}></div>
+   <div class="settingRow"><div class="copy"><b>Include Grocery details</b></div><input id="setRGrocery" type="checkbox" ${boolChecked(s.reportIncludeGrocery)}></div>
+   <div class="settingRow"><div class="copy"><b>Include Vehicles</b></div><input id="setRVehicles" type="checkbox" ${boolChecked(s.reportIncludeVehicles)}></div>
+   <div class="settingRow"><div class="copy"><b>Include reimbursements</b></div><input id="setRReim" type="checkbox" ${boolChecked(s.reportIncludeReimbursements)}></div>
+  </div>
+  <div class="settingBlock"><div class="settingBlockTitle">Before confirming month</div>
+   <div class="settingRow"><div class="copy"><b>Warn about unpaid bills</b></div><input id="setRWarnBills" type="checkbox" ${boolChecked(s.reportWarnUnpaid)}></div>
+   <div class="settingRow"><div class="copy"><b>Warn about unresolved imports</b></div><input id="setRWarnDup" type="checkbox" ${boolChecked(s.reportWarnDuplicates)}></div>
+   <div class="settingRow"><div class="copy"><b>Warn about recoverables</b></div><input id="setRWarnRec" type="checkbox" ${boolChecked(s.reportWarnRecoverables)}></div>
+  </div>${settingsSaveBar('reports')}`)
+ else if(key==='privacy')openSheet('Backup & privacy','Your core HomeFlow data stays usable offline.',`
+  <div class="settingBlock">
+   <div class="settingRow"><div class="copy"><b>Automatic local backup</b></div><input id="setLocalBackup" type="checkbox" ${boolChecked(s.localBackup)}></div>
+   <div class="settingRow"><div class="copy"><b>Backup frequency</b></div><select id="setBackupFreq"><option ${s.backupFrequency==='Daily'?'selected':''}>Daily</option><option ${s.backupFrequency==='Weekly'?'selected':''}>Weekly</option><option ${s.backupFrequency==='Monthly'?'selected':''}>Monthly</option></select></div>
+   <div class="settingRow"><div class="copy"><b>Optional cloud backup</b><div class="tiny">Internet needed only when enabled</div></div><input id="setCloud" type="checkbox" ${boolChecked(s.cloudBackup)}></div>
+   <div class="settingRow"><div class="copy"><b>Keep raw import evidence</b><div class="tiny">Months before automatic cleanup</div></div><input id="setKeepRawMonths" type="number" min="1" max="120" value="${s.keepRawMonths}"></div>
+  </div>
+  <div class="settingBlock"><div class="settingBlockTitle">App privacy</div>
+   <div class="settingRow"><div class="copy"><b>App lock</b></div><input id="setAppLock" type="checkbox" ${boolChecked(s.appLock)}></div>
+   <div class="settingRow"><div class="copy"><b>Fingerprint / face unlock</b></div><input id="setBio" type="checkbox" ${boolChecked(s.biometric)}></div>
+   <div class="settingRow"><div class="copy"><b>Lock after</b></div><select id="setLockTimeout"><option value="1" ${s.lockTimeout==1?'selected':''}>1 min</option><option value="5" ${s.lockTimeout==5?'selected':''}>5 min</option><option value="15" ${s.lockTimeout==15?'selected':''}>15 min</option></select></div>
+   <div class="settingRow"><div class="copy"><b>Hide amounts in recent-apps preview</b></div><input id="setHideRecent" type="checkbox" ${boolChecked(s.hideRecentAmounts)}></div>
+  </div>${settingsSaveBar('privacy')}`)
+ else if(key==='appearance')openSheet('Appearance & widget','Control what Home and the Android widget reveal.',`
+  <div class="settingBlock">
+   <div class="settingRow"><div class="copy"><b>Theme</b></div><select id="setTheme"><option ${s.theme==='System'?'selected':''}>System</option><option ${s.theme==='Light'?'selected':''}>Light</option><option ${s.theme==='Dark'?'selected':''}>Dark</option></select></div>
+   <div class="settingRow"><div class="copy"><b>Density</b></div><select id="setDensity"><option ${s.density==='Comfortable'?'selected':''}>Comfortable</option><option ${s.density==='Compact'?'selected':''}>Compact</option></select></div>
+   <div class="settingRow"><div class="copy"><b>Show ₹ amounts on Home</b></div><input id="setShowHomeAmt" type="checkbox" ${boolChecked(s.showHomeAmounts)}></div>
+  </div>
+  <div class="settingBlock"><div class="settingBlockTitle">Home-screen widget</div>
+   <div class="settingRow"><div class="copy"><b>Visible service slots</b></div><select id="setWidgetSlots"><option value="2" ${s.widgetServiceSlots==2?'selected':''}>2</option><option value="3" ${s.widgetServiceSlots==3?'selected':''}>3</option><option value="4" ${s.widgetServiceSlots==4?'selected':''}>4</option></select></div>
+   <div class="settingRow"><div class="copy"><b>Show Verify today</b></div><input id="setWVerify" type="checkbox" ${boolChecked(s.widgetShowVerify)}></div>
+   <div class="settingRow"><div class="copy"><b>Show Out of station</b></div><input id="setWAway" type="checkbox" ${boolChecked(s.widgetShowAway)}></div>
+   <div class="settingRow"><div class="copy"><b>Show Grocery items remaining</b></div><input id="setWGrocery" type="checkbox" ${boolChecked(s.widgetShowGrocery)}></div>
+   <div class="settingRow"><div class="copy"><b>Show next unpaid bill</b></div><input id="setWBill" type="checkbox" ${boolChecked(s.widgetShowNextBill)}></div>
+   <div class="settingRow"><div class="copy"><b>Privacy mode: hide widget amounts</b></div><input id="setWHide" type="checkbox" ${boolChecked(s.widgetHideAmounts)}></div>
+  </div>${settingsSaveBar('appearance')}`)
+ else if(key==='about')openSheet('About HomeFlow','Offline-first household command center.',`
+  <div class="settingBlock">
+   <div class="line"><b>Core principle</b><div class="tiny">One canonical transaction, many views: month, category, card, person and vehicle.</div></div>
+   <div class="line"><b>Privacy</b><div class="tiny">Never store full card number, CVV, PIN or OTP. Direct SMS is optional; XML/ZIP remains the permission-light fallback.</div></div>
+   <div class="line"><b>Imports</b><div class="tiny">Review-first. Exact duplicates may be suggested for Ignore; strong/weak matches stay reversible.</div></div>
+   <div class="line"><b>Money storage</b><div class="tiny">Production Android build will store money as integer paise.</div></div>
+   <div class="line"><b>Prototype</b><div class="tiny">This browser build stores test data in localStorage. Android-only permissions and the real home-screen widget require the APK.</div></div>
+  </div><button class="ghost full" style="margin-top:10px" onclick="settingsBack()">← Back to Settings</button>`)
+}
+function settingsSaveBar(section){return `<div class="settingsFooter"><button class="ghost" onclick="settingsBack()">← Settings</button><button class="primary" onclick="saveSettingsSection('${section}')">Save</button></div>`}
+function saveSettingsSection(k){
+ const s=state.settings;
+ if(k==='general'){s.homeName=val('setHomeName')||'My Home';s.currency=val('setCurrency');s.weekStart=val('setWeekStart');s.dateFormat=val('setDateFormat');s.numberFormat=val('setNumberFormat');s.rememberPayment=document.getElementById('setRememberPay').checked;s.confirmDelete=document.getElementById('setConfirmDelete').checked}
+ if(k==='services'){s.maidMonthly=Number(val('setMaid')||2000);s.milkRate=Number(val('setMilk')||50);s.milkQuantity=Number(val('setMilkQty')||.5);s.awayConfirm=document.getElementById('setAwayConfirm').checked;s.awayDateRange=document.getElementById('setAwayRange').checked;s.restoreAfterAway=document.getElementById('setAwayRestore').checked;s.showAwayCalendar=document.getElementById('setAwayCalendar').checked;s.returnReminder=document.getElementById('setReturnReminder').checked}
+ if(k==='money'){s.billReminderDays=Number(val('setBillDays')||0);s.autoCreateNextBill=document.getElementById('setAutoBill').checked;s.hidePaidBillsHome=document.getElementById('setHidePaid').checked;s.upcomingBillDays=Number(val('setUpcoming')||15);s.rememberPayment=document.getElementById('setMoneyRemember').checked}
+ if(k==='grocery'){s.groceryHomePreview=document.getElementById('setGHome').checked;s.groceryMoveChecked=document.getElementById('setGMove').checked;s.groceryHideChecked=document.getElementById('setGHide').checked;s.groceryRememberQty=document.getElementById('setGQty').checked;s.groceryRememberPrice=document.getElementById('setGPrice').checked;s.groceryRememberStore=document.getElementById('setGStore').checked;s.groceryFinishPrompt=document.getElementById('setGFinish').checked}
+ if(k==='notifications'){s.dailyServiceReminder=document.getElementById('setDailyRem').checked;s.dailyReminderTime=val('setDailyTime');s.onlyUnverifiedReminder=document.getElementById('setOnlyUnverified').checked;s.billNotifications=document.getElementById('setBillNot').checked;s.cardDueNotifications=document.getElementById('setCardNot').checked;s.vehicleNotifications=document.getElementById('setVehNot').checked;s.reimbursementNotifications=document.getElementById('setReimNot').checked;s.monthEndReminder=document.getElementById('setMonthNot').checked;s.quietHours=document.getElementById('setQuiet').checked;s.quietStart=val('setQuietStart');s.quietEnd=val('setQuietEnd')}
+ if(k==='imports'){s.notificationDetection=document.getElementById('setNotif').checked;s.smsImport=document.getElementById('setSms').checked;s.duplicateSensitivity=val('setDupSens');s.exactAutoIgnore=document.getElementById('setExactIgnore').checked;s.strongAlwaysAsk=document.getElementById('setStrongAsk').checked;s.weakAlwaysAsk=document.getElementById('setWeakAsk').checked;s.learnMerchantRules=document.getElementById('setLearnMerchant').checked;s.retainRawImport=document.getElementById('setRetainRaw').checked;s.allowImportUndo=document.getElementById('setImportUndo').checked}
+ if(k==='reports'){s.reportDetail=val('setReportDetail');s.reportIncludePie=document.getElementById('setRPie').checked;s.reportIncludePaymentChart=document.getElementById('setRPay').checked;s.reportIncludeLedger=document.getElementById('setRLedger').checked;s.reportIncludeServiceCalendar=document.getElementById('setRService').checked;s.reportIncludeGrocery=document.getElementById('setRGrocery').checked;s.reportIncludeVehicles=document.getElementById('setRVehicles').checked;s.reportIncludeReimbursements=document.getElementById('setRReim').checked;s.reportWarnUnpaid=document.getElementById('setRWarnBills').checked;s.reportWarnDuplicates=document.getElementById('setRWarnDup').checked;s.reportWarnRecoverables=document.getElementById('setRWarnRec').checked}
+ if(k==='privacy'){s.localBackup=document.getElementById('setLocalBackup').checked;s.backupFrequency=val('setBackupFreq');s.cloudBackup=document.getElementById('setCloud').checked;s.keepRawMonths=Number(val('setKeepRawMonths')||12);s.appLock=document.getElementById('setAppLock').checked;s.biometric=document.getElementById('setBio').checked;s.lockTimeout=Number(val('setLockTimeout')||5);s.hideRecentAmounts=document.getElementById('setHideRecent').checked}
+ if(k==='appearance'){s.theme=val('setTheme');s.density=val('setDensity');s.showHomeAmounts=document.getElementById('setShowHomeAmt').checked;s.widgetServiceSlots=Number(val('setWidgetSlots')||4);s.widgetShowVerify=document.getElementById('setWVerify').checked;s.widgetShowAway=document.getElementById('setWAway').checked;s.widgetShowGrocery=document.getElementById('setWGrocery').checked;s.widgetShowNextBill=document.getElementById('setWBill').checked;s.widgetHideAmounts=document.getElementById('setWHide').checked}
+ saveState();applyAppearance();openSettings();toast('Settings saved ✓')
+}
+function exportSettings(){
+ const blob=new Blob([JSON.stringify(state.settings,null,2)],{type:'application/json'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='HomeFlow_Settings.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)
+}
+
+function resetPrototype(){if(confirm('Reset all prototype data?')){state=initialState();saveState();closeSheet()}}
+
+function openSheet(title,sub,body){document.getElementById('modalTitle').textContent=title;document.getElementById('modalSub').textContent=sub||'';document.getElementById('modalBody').innerHTML=body;document.getElementById('sheet').classList.add('show')}
+function closeSheet(){document.getElementById('sheet').classList.remove('show')}
+document.getElementById('sheet').onclick=e=>{if(e.target.id==='sheet')closeSheet()}
+function val(id){return document.getElementById(id)?.value||''}
+function escAttr(s){return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;')}
+function esc(s){return String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+
+let importRaw=[],importParsed=[],dupCandidates=[],detectedMin=null,detectedMax=null,importFormat='';
+const amountRe=/(?:₹|rs\.?|inr)\s*[:\-]?\s*([0-9][0-9,]*(?:\.\d{1,2})?)/i;
+const finRe=/\b(spent|debited|debit|credited|credit|received|paid|purchase|txn|transaction|upi|card|account|a\/c|refund|withdrawn|withdrawal|sent)\b/i;
+const last4Re=/(?:ending|xx|x{2,}|\*{2,}|•{2,})\s*([0-9]{4})/i;
+function parseDate(ms,readable){if(ms&&/^\d{11,}$/.test(ms)){const d=new Date(Number(ms));if(!isNaN(d))return d}if(readable){const d=new Date(readable);if(!isNaN(d))return d}return null}
+function xmlFamily(doc){const rt=doc.documentElement.tagName.toLowerCase();return rt==='allsms'?'Super Backup & Restore':rt==='smses'?'SMS Backup & Restore / SyncTech':'Generic SMS XML'}
+function extractMessages(doc){return [...doc.getElementsByTagName('sms')].map((n,i)=>{const a={};for(const x of n.attributes)a[x.name]=x.value;return{id:'I'+i,sender:a.address||a.addr||a.sender||'',body:a.body||a.text||'',date:a.date||a.timestamp||a.date_sent||'',readable:a.time||a.readable_date||''}})}
+function direction(body){return /\b(refund|refunded|credited|credit|received|reversed|reversal)\b/i.test(body)?'credit':'debit'}
+function merchant(body){let m=body.match(/\bat\s+([A-Z0-9][A-Z0-9 &._-]{2,32}?)(?=\s+(?:on|using|via|ref|txn)\b|[.,]|$)/i);if(!m)m=body.match(/\b(?:paid to|sent to)\s+([A-Z0-9][A-Z0-9 &._-]{2,32}?)(?=\s+(?:on|using|via|ref|txn)\b|[.,]|$)/i);if(!m)m=body.match(/\bfrom\s+([A-Z0-9][A-Z0-9 &._-]{2,32}?)(?=[.,]|$)/i);return m?m[1].trim():''}
+function norm(s){return String(s||'').toUpperCase().replace(/\b(PVT|LTD|PRIVATE|LIMITED|PAYMENTS?|INDIA|ONLINE|STORE|SERVICES?)\b/g,'').replace(/[^A-Z0-9]/g,'').trim()}
+function similarity(a,b){a=norm(a);b=norm(b);if(!a||!b)return 0;if(a===b)return 1;if(a.includes(b)||b.includes(a))return .88;const A=new Set(a.match(/.{1,2}/g)||[]),B=new Set(b.match(/.{1,2}/g)||[]);let inter=0;for(const x of A)if(B.has(x))inter++;return inter/Math.max(A.size,B.size,1)}
+function sameDay(a,b){return a&&b&&a.toDateString()===b.toDateString()}
+function classifyDup(a,b){if(a.amount!==b.amount||a.dir!==b.dir)return null;const cardMatch=!!a.last4&&!!b.last4&&a.last4===b.last4,cardConflict=!!a.last4&&!!b.last4&&a.last4!==b.last4;if(cardConflict)return null;const sim=similarity(a.merchant||a.sender,b.merchant||b.sender),day=sameDay(a.dt,b.dt);if(a.rawKey&&b.rawKey&&a.rawKey===b.rawKey)return{level:'exact',score:100,why:'Same original SMS record.'};if(day&&cardMatch&&sim>=.7)return{level:'strong',score:92,why:`Same amount/direction/card/day; merchant similarity ${Math.round(sim*100)}%.`};if(day&&sim>=.82)return{level:'strong',score:86,why:`Same amount/direction/day with high merchant similarity ${Math.round(sim*100)}%.`};if(day&&(cardMatch||sim>=.45))return{level:'weak',score:65,why:'Same amount/direction/day with partial identity match.'};return null}
+function existingForDup(){return state.txns.map(t=>({id:t.id,dt:new Date(t.date+'T12:00:00'),amount:t.amount,dir:t.type==='REIMBURSEMENT'||t.type==='REFUND'?'credit':'debit',last4:state.cards.find(c=>c.id===t.payment)?.last4||'',merchant:t.merchant||t.category,sender:'ledger',rawKey:null}))}
+async function unzipFirstXml(file){const buf=await file.arrayBuffer(),dv=new DataView(buf);let eocd=-1;for(let i=buf.byteLength-22;i>=Math.max(0,buf.byteLength-65557);i--){if(dv.getUint32(i,true)===0x06054b50){eocd=i;break}}if(eocd<0)throw Error('ZIP directory not found');const entries=dv.getUint16(eocd+10,true),cdOff=dv.getUint32(eocd+16,true);let p=cdOff;for(let n=0;n<entries;n++){if(dv.getUint32(p,true)!==0x02014b50)throw Error('Unsupported ZIP directory');const method=dv.getUint16(p+10,true),comp=dv.getUint32(p+20,true),nameLen=dv.getUint16(p+28,true),extraLen=dv.getUint16(p+30,true),commentLen=dv.getUint16(p+32,true),localOff=dv.getUint32(p+42,true),name=new TextDecoder().decode(new Uint8Array(buf,p+46,nameLen));if(name.toLowerCase().endsWith('.xml')){if(dv.getUint32(localOff,true)!==0x04034b50)throw Error('Invalid ZIP local header');const ln=dv.getUint16(localOff+26,true),le=dv.getUint16(localOff+28,true),start=localOff+30+ln+le,data=new Uint8Array(buf,start,comp);if(method===0)return new TextDecoder().decode(data);if(method===8){if(typeof DecompressionStream==='undefined')throw Error('This browser cannot decompress ZIP files');const ds=new DecompressionStream('deflate-raw'),stream=new Blob([data]).stream().pipeThrough(ds);return await new Response(stream).text()}throw Error('Unsupported ZIP compression method')}p+=46+nameLen+extraLen+commentLen}throw Error('No XML file found inside ZIP')}
+document.getElementById('importFile').addEventListener('change',async()=>{const f=document.getElementById('importFile').files[0];if(!f)return;document.getElementById('fileTitle').textContent='Backup selected';document.getElementById('fileName').textContent=f.name;document.getElementById('importStatus').innerHTML='<div class="ok">Reading locally…</div>';try{let text=f.name.toLowerCase().endsWith('.zip')?await unzipFirstXml(f):await f.text();const doc=new DOMParser().parseFromString(text,'application/xml');if(doc.querySelector('parsererror'))throw Error('Invalid XML');importRaw=extractMessages(doc);if(!importRaw.length)throw Error('No SMS records found');const dated=importRaw.map(m=>parseDate(m.date,m.readable)).filter(Boolean);detectedMin=new Date(Math.min(...dated));detectedMax=new Date(Math.max(...dated));importFormat=xmlFamily(doc)+(f.name.toLowerCase().endsWith('.zip')?' inside ZIP':'');document.getElementById('detectedRange').textContent=`${detectedMin.toLocaleDateString('en-GB')} → ${detectedMax.toLocaleDateString('en-GB')}`;document.getElementById('smsCount').textContent=importRaw.length+' SMS';document.getElementById('format').textContent=importFormat;document.getElementById('detected').classList.remove('hidden');document.getElementById('analyseImport').disabled=false;document.getElementById('importStatus').innerHTML='<div class="ok">Backup recognised. Dates detected automatically.</div>'}catch(e){document.getElementById('importStatus').innerHTML='<div class="error">'+esc(e.message)+'</div>'}})
+document.getElementById('analyseImport').onclick=()=>{importParsed=[];for(const m of importRaw){const am=m.body.match(amountRe);if(!am||!finRe.test(m.body))continue;const amount=Number(am[1].replace(/,/g,''));const l=m.body.match(last4Re);importParsed.push({...m,dt:parseDate(m.date,m.readable),amount,dir:direction(m.body),last4:l?l[1]:'',merchant:merchant(m.body),rawKey:[m.sender,m.date,m.body].join('|').toUpperCase()})}dupCandidates=[];const existing=existingForDup(),rank={exact:3,strong:2,weak:1},best={};for(const t of importParsed){for(const e of existing){const c=classifyDup(t,e);if(c){const item={id:id('d'),incoming:t,existing:e,level:c.level,score:c.score,why:c.why,decision:c.level==='exact'?'ignore':'review'};if(!best[t.id]||rank[item.level]>rank[best[t.id].level]||item.score>best[t.id].score)best[t.id]=item}}}dupCandidates=Object.values(best);renderImportAnalysis()}
+function renderImportAnalysis(){document.getElementById('importSummary').classList.remove('hidden');document.getElementById('finCount').textContent=importParsed.length;document.getElementById('exactCount').textContent=dupCandidates.filter(x=>x.level==='exact').length+' exact';document.getElementById('strongCount').textContent=dupCandidates.filter(x=>x.level==='strong').length+' strong';document.getElementById('weakCount').textContent=dupCandidates.filter(x=>x.level==='weak').length+' weak';document.getElementById('cleanCount').textContent=(importParsed.length-dupCandidates.length)+' clean';document.getElementById('duplicateReview').innerHTML=dupCandidates.map(c=>`<div class="dup ${c.level}"><div class="row"><div><b>${c.level.toUpperCase()} duplicate</b><div class="tiny">${c.score}% confidence</div></div><span class="badge ${c.level==='exact'?'red':c.level==='strong'?'amber':'blue'}">${c.level}</span></div><div class="why">${c.why}</div><div class="compare"><div class="side"><b>Incoming</b>${money(c.incoming.amount)} ${c.incoming.dir}<br>${esc(c.incoming.merchant||c.incoming.sender)}</div><div class="side"><b>Existing</b>${money(c.existing.amount)} ${c.existing.dir}<br>${esc(c.existing.merchant||c.existing.sender)}</div></div><div class="grid3" style="margin-top:8px"><button class="ghost" onclick="decideDup('${c.id}','keep')">Keep both</button><button class="soft" onclick="decideDup('${c.id}','merge')">Merge</button><button class="danger" onclick="decideDup('${c.id}','ignore')">Ignore</button></div><div id="${c.id}" class="tiny" style="margin-top:6px">${c.decision==='ignore'?'Preselected: Ignore':'Decision required'}</div></div>`).join('');const groups={};importParsed.forEach(t=>{const k=t.dt?t.dt.toLocaleString('en-US',{month:'long',year:'numeric'}):'Unknown';(groups[k]??=[]).push(t)});document.getElementById('importMonths').innerHTML=Object.entries(groups).map(([m,ts])=>`<div class="month"><div class="row"><b>${m}</b><b>${ts.length} transactions</b></div>${ts.slice(0,8).map(t=>`<div class="tx"><div class="row"><div><b>${t.dt?t.dt.toLocaleDateString('en-GB'):'No date'} • ${esc(t.merchant||t.sender)}</b><div class="tiny">${t.last4?'••••'+t.last4:''}</div></div><b>${t.dir==='credit'?'+':'-'}${money(t.amount)}</b></div></div>`).join('')}</div>`).join('');document.getElementById('continueImport').classList.remove('hidden')}
+function decideDup(id,decision){const c=dupCandidates.find(x=>x.id===id);c.decision=decision;document.getElementById(id).textContent='Decision: '+decision}
+function prepareImportConfirm(){const unresolved=dupCandidates.filter(x=>x.decision==='review').length;if(unresolved){toast(`${unresolved} duplicate candidate(s) still need a decision`);return}openSheet('Verify import period','Dates were read from the backup.',`<div class="panel"><div class="tiny">Import transactions from</div><div class="amount">${detectedMin.toLocaleDateString('en-GB')} → ${detectedMax.toLocaleDateString('en-GB')}</div><div class="tiny">Accepted transactions will be stored month-wise.</div></div><div class="grid2" style="margin-top:10px"><button class="ghost" onclick="closeSheet()">Back</button><button class="primary" onclick="commitImport()">Confirm import</button></div>`)}
+function commitImport(){let posted=0;for(const t of importParsed){const d=dupCandidates.find(x=>x.incoming.id===t.id);if(d&&d.decision==='ignore')continue;if(d&&d.decision==='merge')continue;state.txns.push({id:id('t'),date:(t.dt||APP_TODAY).toISOString().slice(0,10),amount:t.amount,type:t.dir==='credit'?'OTHER_CREDIT':'EXPENSE',category:'Other',merchant:t.merchant||t.sender,payment:cardIdFromLast4(t.last4)||'Bank',forWhom:'household',source:'SMS_IMPORT'});posted++}state.importSessions.push({id:id('imp'),date:new Date().toISOString(),format:importFormat,count:posted,status:'posted'});saveState();closeSheet();toast(`${posted} transactions imported ✓`)}
+function cardIdFromLast4(l){return state.cards.find(c=>c.last4===l)?.id||null}
+
+function toggleConfirmMonth(){state.confirmedMonths[ACTIVE_MONTH]=!state.confirmedMonths[ACTIVE_MONTH];saveState();toast(state.confirmedMonths[ACTIVE_MONTH]?'Month confirmed ✓':'Month unlocked')}
+function svgDonut(entries,total){
+  const colors=['#2f9d6a','#e5a13b','#3b86ca','#d95d62','#7b6fd0','#52a6a1','#d48a45'];
+  const r=52,c=2*Math.PI*r; let off=0,arcs='';
+  entries.forEach(([name,v],i)=>{
+    const pct=v/total, dash=c*pct;
+    arcs+=`<circle cx="75" cy="75" r="${r}" fill="none" stroke="${colors[i%colors.length]}" stroke-width="26"
+      stroke-dasharray="${dash} ${c-dash}" stroke-dashoffset="${-off}" transform="rotate(-90 75 75)"/>`;
+    off+=dash;
+  });
+  return `<svg width="150" height="150" viewBox="0 0 150 150">${arcs}<circle cx="75" cy="75" r="34" fill="white"/>
+    <text x="75" y="70" text-anchor="middle" font-size="10" fill="#748595">Net spend</text>
+    <text x="75" y="88" text-anchor="middle" font-size="15" font-weight="800" fill="#17324b">${money(householdSpend())}</text></svg>`;
+}
+function svgBars(entries){
+  const max=Math.max(...entries.map(x=>x[1]),1), w=360, labelW=122, chartW=190, rowH=33;
+  let h=entries.length*rowH+18, body='';
+  entries.forEach(([name,v],i)=>{
+    const y=18+i*rowH, bw=Math.max(2,chartW*(v/max));
+    body+=`<text x="0" y="${y+13}" font-size="10" fill="#17324b">${name}</text>
+      <rect x="${labelW}" y="${y}" width="${bw}" height="16" rx="8" fill="${['#2f9d6a','#3b86ca','#7b6fd0','#e5a13b'][i%4]}"/>
+      <text x="${labelW+chartW+8}" y="${y+13}" font-size="10" fill="#17324b">${money(v)}</text>`;
+  });
+  return `<svg width="100%" viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMinYMin meet">${body}</svg>`;
+}
+function reportRows(rows){return `<table><tbody>${rows.map(r=>`<tr><td>${r[0]}</td><td class="num">${r[1]}</td></tr>`).join('')}</tbody></table>`}
+function printMonthlyReport(){
+  const cats=calcCategories(),pt=paymentTotals(),s=calcServices(),total=householdSpend(),rec=recoverable();
+  const positives=Object.entries(cats).filter(([k,v])=>v>0).sort((a,b)=>b[1]-a[1]);
+  const refunds=Object.entries(cats).filter(([k,v])=>v<0).reduce((a,x)=>a+x[1],0);
+  const positiveSpend=positives.reduce((a,x)=>a+x[1],0);
+  const peopleBalances=calcPeople();
+  const ledger=householdTxns().slice().sort((a,b)=>a.date.localeCompare(b.date));
+  const status=state.confirmedMonths[ACTIVE_MONTH]?'CONFIRMED':'DRAFT • MONTH NOT CONFIRMED';
+  const statusClass=state.confirmedMonths[ACTIVE_MONTH]?'confirmed':'draft';
+  const payEntries=Object.entries(pt).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]).map(([k,v])=>[paymentName(k),v]);
+  const pendingBills=state.bills.filter(b=>monthKey(b.due)===ACTIVE_MONTH&&!b.paid);
+  const pendingTotal=pendingBills.reduce((a,b)=>a+b.amount,0);
+  const expenses=ledger.filter(t=>t.type==='EXPENSE').length, advances=ledger.filter(t=>t.type==='ADVANCE').length, adjustments=ledger.filter(t=>['REFUND','REIMBURSEMENT'].includes(t.type)).length;
+  const palette=['#2f9d6a','#e6a23c','#3b86ca','#d85c62','#7569cd','#4fa6a0','#d58945'];
+  const billRows=state.bills.filter(b=>monthKey(b.due)===ACTIVE_MONTH).map(b=>`<tr><td>${b.name}</td><td><span class="status ${b.paid?'ok':'pending'}">${b.paid?'Paid':'Pending'}</span></td><td>${b.paid?(b.paidDate||''):'Due '+b.due}</td><td class="num">${money(b.amount)}</td></tr>`).join('');
+  const groceryRows=householdTxns().filter(t=>t.type==='EXPENSE'&&t.category==='Grocery').sort((a,b)=>b.date.localeCompare(a.date)).map(t=>`<div class="minirow"><div><b>${t.date} • ${t.merchant}</b><small>${paymentName(t.payment)}</small></div><b>${money(t.amount)}</b></div>`).join('')||'<div class="muted">No grocery purchases</div>';
+  const vehicleRows=state.vehicles.map(v=>{const fuel=householdTxns().filter(t=>t.category==='Fuel'&&t.vehicle===v.id).reduce((a,t)=>a+t.amount,0);return `<div class="minirow"><div><b>${v.name}</b><small>${Number(v.odo).toLocaleString('en-IN')} km • next service ${Number(v.nextService).toLocaleString('en-IN')} km</small></div><b>${money(fuel)}</b></div>`}).join('');
+  const peopleRows=state.people.map(p=>`<div class="minirow"><div><b>${p.name}</b><small>Outstanding recoverable</small></div><b class="purple">${money(Math.max(0,peopleBalances[p.id]||0))}</b></div>`).join('');
+  const donutHtml=state.settings.reportIncludePie?`<div class="chartblock"><div class="donutWrap">${svgDonut(positives,positiveSpend)}</div><div class="legend">${positives.map(([k,v],i)=>`<div class="leg"><span><i style="background:${palette[i%palette.length]}"></i>${k}</span><span class="pct">${(v/positiveSpend*100).toFixed(1)}%</span><b>${money(v)}</b></div>`).join('')}<div class="refundPill">Refunds / credits ${money(refunds)}</div></div></div>`:'';
+  const win=window.open('','_blank');
+  if(!win){toast('Allow pop-ups to preview the monthly statement');return}
+  win.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>HomeFlow September 2026 Statement</title>
+  <style>
+   @page{size:A4;margin:0}*{box-sizing:border-box}body{margin:0;background:#eaf0ee;color:#17324b;font-family:Inter,Arial,sans-serif}.toolbar{position:sticky;top:0;z-index:5;padding:9px;background:#102d41;text-align:center}.toolbar button{border:0;border-radius:10px;padding:9px 14px;font-weight:800;cursor:pointer;color:#17324b}.page{width:210mm;min-height:297mm;margin:10px auto;background:#fff;position:relative;padding:50mm 15mm 18mm}.head{position:absolute;left:0;right:0;top:0;height:39mm;background:#16344b;color:white;padding:12mm 15mm}.brand{font-size:8px;color:#a7d8c0;font-weight:800;letter-spacing:.6px}.head h1{margin:4px 0 3px;font-size:25px}.head p{margin:0;color:#d6e2e8;font-size:11px}.state{position:absolute;right:15mm;top:15mm;border-radius:99px;padding:7px 12px;font-size:9px;font-weight:800}.draft{background:#fff4de;color:#956017}.confirmed{background:#eaf6ef;color:#2f7e59}.pg{position:absolute;right:15mm;bottom:8mm;font-size:8px;color:#c6d4da}.eyebrow{font-size:9px;color:#728392;font-weight:800;letter-spacing:.5px;margin-bottom:8px}.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.kpi{border:1px solid #e5ecef;border-radius:14px;padding:13px 11px;position:relative;overflow:hidden}.kpi:after{content:"";position:absolute;left:0;right:0;bottom:0;height:5px;background:var(--a)}.kpi span{display:block;font-size:8px;color:#728392;font-weight:800;text-transform:uppercase}.kpi b{font-size:20px;display:block;margin-top:9px}.recon{margin-top:10px;border-radius:10px;background:#f1f7f4;padding:9px 12px;font-size:10px;font-weight:700}.recon strong{color:#2f9d6a;margin-right:14px}.section{margin-top:27px}.section h2{font-size:18px;margin:0}.section .sub{font-size:9px;color:#728392;margin-top:3px}.chartblock{display:grid;grid-template-columns:145px 1fr;gap:20px;align-items:center;margin-top:11px}.donutWrap{display:grid;place-items:center}.legend{display:grid;gap:8px}.leg{display:grid;grid-template-columns:1fr 48px 75px;align-items:center;font-size:10px}.leg span:first-child{display:flex;align-items:center;gap:7px}.leg i{width:10px;height:10px;border-radius:50%;display:inline-block}.leg .pct{color:#728392}.leg b{text-align:right}.refundPill{margin-top:4px;background:#fdecee;color:#d85c62;border-radius:99px;padding:6px 10px;text-align:center;font-size:9px;font-weight:800;width:190px}.attention{display:grid;gap:8px;margin-top:10px}.alert{border:1px solid #e5ecef;background:#fafcfb;border-radius:12px;padding:10px 12px;display:grid;grid-template-columns:1fr auto;align-items:center}.alert b{font-size:10px}.alert small{display:block;color:#728392;margin-top:3px}.tag{border-radius:99px;padding:6px 11px;font-size:9px;font-weight:800}.amber{background:#fff4de;color:#956017}.red{background:#fdecee;color:#d85c62}.violet{background:#efeffd;color:#7569cd}.bars{display:grid;gap:10px;margin-top:12px}.barrow{display:grid;grid-template-columns:185px 1fr 75px;align-items:center;gap:10px;font-size:10px}.track{height:13px;background:#eaf0f2;border-radius:99px;overflow:hidden}.fill{height:100%;border-radius:99px}.num{text-align:right;font-weight:800}.foot{position:absolute;left:15mm;right:15mm;bottom:8mm;border-top:1px solid #e5ecef;padding-top:7px;font-size:8px;color:#728392;display:flex;justify-content:space-between}.cards2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.serviceCard{border:1px solid #e5ecef;border-radius:14px;padding:13px}.serviceCard .label{font-size:8px;color:#728392;font-weight:800}.serviceCard .big{font-size:22px;font-weight:800;margin-top:8px}.serviceCard .meta{font-size:9px;color:#728392;margin-top:8px}.serviceCard .amt{float:right;font-size:14px;font-weight:800}.status{border-radius:99px;padding:4px 8px;font-size:8px;font-weight:800}.ok{background:#eaf6ef;color:#2f9d6a}.pending{background:#fff4de;color:#956017}table{width:100%;border-collapse:collapse;margin-top:9px;font-size:9px}th{background:#edf4f1;color:#728392;text-transform:uppercase;font-size:8px;text-align:left;padding:8px}td{border-bottom:1px solid #edf1f2;padding:8px}td.num{text-align:right}.miniCard{border:1px solid #e5ecef;border-radius:14px;padding:12px}.minirow{display:flex;justify-content:space-between;gap:12px;padding:7px 0}.minirow+ .minirow{border-top:1px solid #edf1f2}.minirow b{font-size:9px}.minirow small{display:block;color:#728392;margin-top:3px;font-size:8px}.purple{color:#7569cd}.note{background:#f4f7fb;border-radius:12px;padding:12px;font-size:9px;line-height:1.5}.summaryCards{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:24px}.summaryCards .kpi b{font-size:18px}.ledger th,.ledger td{font-size:8px;padding:7px}.ledger .EXPENSE{color:#2f9d6a;font-weight:800}.ledger .ADVANCE{color:#7569cd;font-weight:800}.ledger .REFUND{color:#d85c62;font-weight:800}.ledger .REIMBURSEMENT{color:#3b86ca;font-weight:800}.verify{border:1px solid #e5ecef;border-radius:15px;padding:14px;margin-top:10px}.verifyTop{display:flex;align-items:center;gap:14px}.verifyTop h3{margin:0;font-size:15px}.checkrow{display:flex;justify-content:space-between;font-size:9px;margin-top:9px}.checkrow span:first-child:before{content:"•";font-size:18px;vertical-align:-2px;margin-right:7px;color:#7569cd}@media print{body{background:#fff}.toolbar{display:none}.page{margin:0;page-break-after:always}.page:last-child{page-break-after:auto}}
+  </style></head><body><div class="toolbar"><button onclick="window.print()">Save as PDF / Print</button></div>
+  <section class="page"><div class="head"><div class="brand">HOMEFLOW</div><h1>September 2026 statement</h1><p>Monthly household finance & services summary</p><span class="state ${statusClass}">${status}</span><span class="pg">Page 1 of 3</span></div>
+   <div class="eyebrow">STATEMENT AT A GLANCE</div><div class="kpis"><div class="kpi" style="--a:#2f9d6a"><span>Net household spend</span><b>${money(total)}</b></div><div class="kpi" style="--a:#3b86ca"><span>Spend before refunds</span><b>${money(positiveSpend)}</b></div><div class="kpi" style="--a:#d85c62"><span>Refunds / credits</span><b>${money(refunds)}</b></div><div class="kpi" style="--a:#7569cd"><span>Recoverable due</span><b>${money(rec)}</b></div></div>
+   <div class="recon"><strong>RECONCILIATION</strong>${money(positiveSpend)} spend + ${money(refunds)} refunds = ${money(total)} net household spend</div>
+   ${state.settings.reportIncludePie?`<div class="section"><h2>Where the money went</h2><div class="sub">Positive household spend before refunds</div>${donutHtml}</div>`:''}
+   <div class="section"><h2>Action center</h2><div class="sub">What still needs attention before month confirmation</div><div class="attention"><div class="alert"><div><b>Pending bills</b><small>${pendingBills.map(b=>b.name).join(' + ')||'No pending bills'}</small></div><span class="tag amber">${money(pendingTotal)}</span></div><div class="alert"><div><b>Service verification</b><small>Daily service review status</small></div><span class="tag red">${s.verified} / ${s.dim}</span></div><div class="alert"><div><b>Month status</b><small>Review bills/imports, then confirm</small></div><span class="tag violet">${state.confirmedMonths[ACTIVE_MONTH]?'CONFIRMED':'DRAFT'}</span></div></div></div>
+   ${state.settings.reportIncludePaymentChart?`<div class="section"><h2>Recorded charges by payment method</h2><div class="sub">May include recoverable purchases; kept separate from net household spend</div><div class="bars">${payEntries.map(([n,v],i)=>`<div class="barrow"><span>${n}</span><div class="track"><div class="fill" style="width:${Math.max(4,v/Math.max(...payEntries.map(x=>x[1]))*100)}%;background:${['#2f9d6a','#3b86ca','#7569cd','#e6a23c'][i%4]}"></div></div><b class="num">${money(v)}</b></div>`).join('')}</div></div>`:''}<div class="foot"><span>HomeFlow • September 2026</span><span>1 / 3</span></div></section>
+
+  <section class="page"><div class="head"><div class="brand">HOMEFLOW</div><h1>Household obligations</h1><p>Services, bills, grocery, vehicles and reimbursements</p><span class="pg">Page 2 of 3</span></div>
+   <div class="section" style="margin-top:0"><h2>Regular services</h2><div class="sub">Monthly calculation and status</div><div class="cards2" style="margin-top:10px"><div class="serviceCard"><div class="label">MAID</div><div class="big">${s.scheduled-s.deduct} / ${s.scheduled}<span class="amt">${money(s.maidPay)}</span></div><div class="meta">${money(s.daily)} / scheduled day</div></div><div class="serviceCard"><div class="label">MILK</div><div class="big">${s.milkDelivered}<span class="amt">${money(s.milkPay)}</span></div><div class="meta">Delivered • ${money(state.settings.milkRate)} per ½ litre</div></div></div></div>
+   <div class="section"><h2>Bills & recurring obligations</h2><div class="sub">Statement-style status view</div><table><thead><tr><th>Bill</th><th>Status</th><th>Date</th><th class="num">Amount</th></tr></thead><tbody>${billRows}</tbody></table></div>
+   <div class="section cards2"><div><h2>Grocery purchases</h2><div class="sub">Recorded shopping trips</div><div class="miniCard" style="margin-top:9px">${groceryRows}</div></div><div><h2>Vehicles</h2><div class="sub">Fuel + maintenance reference</div><div class="miniCard" style="margin-top:9px">${vehicleRows}</div></div></div>
+   ${state.settings.reportIncludeReimbursements?`<div class="section"><h2>People & reimbursements</h2><div class="sub">Amounts owed to you stay outside household-spend totals</div><div class="miniCard" style="margin-top:9px">${peopleRows}</div></div>`:''}<div class="note" style="margin-top:18px"><b>ACCOUNTING NOTE</b><br>Reimbursements reduce receivables; they are not income. Recoverables remain visible but are excluded from true household spend.</div><div class="foot"><span>HomeFlow • September 2026</span><span>2 / 3</span></div></section>
+
+  <section class="page"><div class="head"><div class="brand">HOMEFLOW</div><h1>Transaction ledger</h1><p>Complete monthly activity with statement-style grouping</p><span class="pg">Page 3 of 3</span></div>
+   <div class="summaryCards"><div class="kpi" style="--a:#3b86ca"><span>All activity</span><b>${ledger.length}</b></div><div class="kpi" style="--a:#2f9d6a"><span>Expenses</span><b>${expenses}</b></div><div class="kpi" style="--a:#7569cd"><span>Advances</span><b>${advances}</b></div><div class="kpi" style="--a:#d85c62"><span>Refunds / repayment</span><b>${adjustments}</b></div></div>
+   ${state.settings.reportIncludeLedger?`<div class="section" style="margin-top:0"><h2>Activity detail</h2><div class="sub">Chronological transaction ledger</div><table class="ledger"><thead><tr><th>Date</th><th>Description</th><th>Type</th><th>Category</th><th>Payment</th><th class="num">Amount</th></tr></thead><tbody>${ledger.map(t=>`<tr><td>${t.date.slice(8,10)} Sep</td><td>${t.merchant||''}</td><td class="${t.type}">${t.type}</td><td>${t.category}</td><td>${paymentName(t.payment)}</td><td class="num" style="color:${['REFUND','REIMBURSEMENT'].includes(t.type)?'#d85c62':'#17324b'}">${(['REFUND','REIMBURSEMENT'].includes(t.type)?'-':'')+money(t.amount)}</td></tr>`).join('')}</tbody></table></div>`:''}
+   <div class="section"><h2>Month verification</h2><div class="sub">Close the statement only after the checklist is clear</div><div class="verify"><div class="verifyTop"><span class="tag amber">${state.confirmedMonths[ACTIVE_MONTH]?'CONFIRMED':'DRAFT'}</span><div><h3>${state.confirmedMonths[ACTIVE_MONTH]?'Month confirmed':'Month not confirmed'}</h3><small class="muted">Review service verification, pending bills and imports before locking September.</small></div></div><div class="checkrow"><span>Service verification</span><b>${s.verified} / ${s.dim} days verified</b></div><div class="checkrow"><span>Pending bills</span><b>${pendingBills.length} bills • ${money(pendingTotal)}</b></div><div class="checkrow"><span>Outstanding recoverable</span><b>${money(rec)}</b></div></div></div>
+   <div class="note" style="margin-top:18px"><b>HOW THIS STATEMENT IS CALCULATED</b><br>• Household spend includes bills, groceries, vehicles, services and home expenses.<br>• Refunds reduce spend. Reimbursements reduce receivables. Advances remain recoverable.<br>• Own-account transfers and credit-card payments are excluded to prevent double counting.</div><div class="foot"><span>HomeFlow • September 2026</span><span>3 / 3</span></div></section></body></html>`);
+  win.document.close();win.focus();
+}
+
+applyAppearance();
+renderAll();
+</script>
+</body></html>
